@@ -1,0 +1,25 @@
+.. Interface
+
+The Interface
+========================
+
+Python scripts can interact with a user in a variety of ways, either through a proper graphic interface,
+the use of buttons in the mouse to direct and signal processing and through simpler, less sophisticated
+user-script communication.
+
+For this project, the latter case was chosen for the main reason that the purpose of
+the visualization tool is mainly to produce output relevant for TC studies while less focus is placed
+on how the visualization takes place.
+
+Details.
+
+1. As most connected-scripts, is written in Python 3.5 to be run in a Linux-GNU terminal.
+2. Interaction with the user through simple questions where options are offered in advance.
+3. Error control: the interface recognizes wrong choices by the user, as well as possibly misleading or
+impossible calculations.
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+.. automodule:: main

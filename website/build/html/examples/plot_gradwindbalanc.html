@@ -1,0 +1,455 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>4. Evaluate gradient wind balance and momentum! &mdash; PyDropsondes 1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../_static/gallery.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="PyDropsondes 1 documentation" href="../index.html"/>
+        <link rel="up" title="Gallery of Examples" href="../gallery.html"/>
+        <link rel="next" title="4. Plot CAPE distributions" href="plot_cape.html"/>
+        <link rel="prev" title="Plot vorticity and divergence in 3D views" href="plot_kinematic3D.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../home.html" class="icon icon-home"> PyDropsondes
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Table of Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../userguide.html">User guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../interface.html">The Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../flight.html">Flightdata</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../process.html">Process Dropsondes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools.html">The Toolbox</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../gallery.html">Gallery of Examples</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="plotrack.html">1. Plotting the track of a Tropical Cyclone</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_intensity_series.html">2. Plotting the intensity metrics of a Tropical Cyclone</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_drift_dropsondes.html">3. Plot the drift of all dropsondes for a TC</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_winds_temp.html">Plot the wind and temperature structure of a TC</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_kinematic3D.html">Plot vorticity and divergence in 3D views</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">4. Evaluate gradient wind balance and momentum!</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#gradient-wind-balance">4.1. Gradient wind balance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#momentum">4.2. Momentum</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#expected-gradient-balance-for-isabel-in-september-12-2005">4.3. Expected gradient balance for Isabel in September 12, 2005:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#expected-momentum-plots-for-isabel-in-september-12-2005">4.4. Expected momentum plots for Isabel in September 12, 2005:</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="plot_cape.html">4. Plot CAPE distributions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gallery.html#examples-for-dummies">Examples for Dummies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gallery.html#intermediate-examples">Intermediate examples</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../home.html">PyDropsondes</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../home.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../gallery.html">Gallery of Examples</a> &raquo;</li>
+        
+      <li>4. Evaluate gradient wind balance and momentum!</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/examples/plot_gradwindbalanc.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="evaluate-gradient-wind-balance-and-momentum">
+<span id="sphx-glr-auto-examples-plot-gradwindbalanc-py"></span><h1>4. Evaluate gradient wind balance and momentum!<a class="headerlink" href="#evaluate-gradient-wind-balance-and-momentum" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<div class="section" id="gradient-wind-balance">
+<h2>4.1. Gradient wind balance<a class="headerlink" href="#gradient-wind-balance" title="Permalink to this headline">¶</a></h2>
+<p>Tropical Cyclone paradigms, such as the one by <a class="reference internal" href="../tools.html#emanuel1986" id="id1">[Ema86]</a> assumes that gradient wind balance given by:</p>
+<div class="math">
+\[\frac{1}{\rho_0}\frac{\partial p}{\partial r}=\frac{V_g^2}{r}+fV_g\]</div>
+<p>where <span class="math">\(\rho_0\)</span> is a constant density, <span class="math">\(\frac{\partial p}{\partial r}\)</span> is the
+radial gradient of the pressure field, <span class="math">\(V_g\)</span> is the gradient wind and <span class="math">\(f\)</span> is the coriolis parameter, holds in the axisymmetric view of a TC.</p>
+<p>To compute the previous equation, the algorithm provided by <a class="reference internal" href="../tools.html#bell2005" id="id2">[BM08]</a> is as follows:</p>
+<ol class="arabic simple">
+<li>Fit a quadratic curve to the radius-pressure scatter.</li>
+<li>Interpolate the pressure fields over the radius-height grid <span class="math">\(r\times H\)</span>.</li>
+<li>Linearly approximate f at all points in the grid.</li>
+<li>Solve the second order equation using a numerical approximation software (in our case, our beloved numpy).</li>
+</ol>
+<p>Hurricane Isabel <a class="reference internal" href="../tools.html#bell2005" id="id3">[BM08]</a> <a class="reference internal" href="../tools.html#schwendike" id="id4">[SK08]</a> was one of the first major Hurricanes found to exceed gradient wind balance and anomaly plots were reported and or discussed in the papers that analyzed the storm.
+Their plots were located at a certain showing how the tangential or azimuthal wind speed at that height exceeded the predicted gradient wind.</p>
+<p>This example proposed in the DVT puts forth a different visualization of gradient wind (im)balance.
+A three panel plot showing a) gradient wind estimation, b) computed tangential wind field and c) the anomaly.
+The anomaly <span class="math">\(alpha\)</span> will be simply defined as the difference between the tangential and gradient winds.
+In this proposition,(sub) super-gradient flow will have a (negative) positive <span class="math">\(alpha\)</span>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This example is not documented in-line but it is rather explained through the Sphinx-Gallery pages, i.e., through this text floating around
+on top of the text-block. This allows to have short but explained example files.</p>
+</div>
+<p>The first section of this example includes the preamble, which is highly documented in <a class="reference internal" href="plot_drift_dropsondes.html#sphx-glr-auto-examples-plot-drift-dropsondes-py"><span class="std std-ref">Plot the drift of all dropsondes for a TC</span></a> and <a class="reference internal" href="../process.html#module-processing" title="processing"><code class="xref py py-meth docutils literal"><span class="pre">processing()</span></code></a>.
+Notice the import of <a class="reference internal" href="../tools.html#toolbox.dp_dr" title="toolbox.dp_dr"><code class="xref py py-meth docutils literal"><span class="pre">toolbox.dp_dr()</span></code></a> and <a class="reference internal" href="../tools.html#toolbox.getgradwind" title="toolbox.getgradwind"><code class="xref py py-meth docutils literal"><span class="pre">toolbox.getgradwind()</span></code></a>. Reader should read this documentation before entering the next blocks of this example.</p>
+<div class="literal-block-wrapper docutils container" id="id9">
+<div class="code-block-caption"><span class="caption-text">Preamble</span><a class="headerlink" href="#id9" title="Permalink to this code">¶</a></div>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">toolbox</span> <span class="kn">import</span> <span class="n">dp_dr</span><span class="p">,</span><span class="n">getgradwind</span>
+<span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="kn">import</span> <span class="n">griddata</span>
+</pre></div>
+</div>
+</div>
+<p>The example is based on reading-in the outputfile of the module <a class="reference internal" href="../process.html#module-processing" title="processing"><code class="xref py py-meth docutils literal"><span class="pre">processing()</span></code></a>, just as <a class="reference internal" href="plot_kinematic3D.html#sphx-glr-auto-examples-plot-kinematic3d-py"><span class="std std-ref">Plot vorticity and divergence in 3D views</span></a> is, by
+implicitly stating the filename through the storm name and date.
+The file is then imported as a numpy array through the function np.genfromtxt.
+Fields are allocated as per written in <a class="reference internal" href="../process.html#module-processing" title="processing"><code class="xref py py-meth docutils literal"><span class="pre">processing()</span></code></a> where fcor is the coriolis parameter and the
+rest maintain the variable as used in the DVT.</p>
+<div class="literal-block-wrapper docutils container" id="id10">
+<div class="code-block-caption"><span class="caption-text">Read-in file and allocate fields.</span><a class="headerlink" href="#id10" title="Permalink to this code">¶</a></div>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">storm</span><span class="o">=</span><span class="s1">&#39;Isabel&#39;</span>
+<span class="n">sdate</span><span class="o">=</span><span class="s1">&#39;16_12-21_12&#39;</span>
+
+<span class="n">matrix</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">genfromtxt</span><span class="p">(</span><span class="n">storm</span><span class="o">+</span><span class="n">sdate</span><span class="o">+</span><span class="s1">&#39;.txt&#39;</span><span class="p">)</span>
+<span class="n">r</span><span class="o">=</span><span class="n">matrix</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">H</span><span class="o">=</span><span class="n">matrix</span><span class="p">[:,</span><span class="mi">5</span><span class="p">]</span>
+<span class="n">u_cartesian</span><span class="o">=</span><span class="n">matrix</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]</span>
+<span class="n">v_cartesian</span><span class="o">=</span><span class="n">matrix</span><span class="p">[:,</span><span class="mi">3</span><span class="p">]</span>
+<span class="n">v_tang</span><span class="o">=</span><span class="n">matrix</span><span class="p">[:,</span><span class="mi">10</span><span class="p">]</span>
+<span class="n">x</span><span class="o">=</span><span class="n">matrix</span><span class="p">[:,</span><span class="mi">12</span><span class="p">]</span>
+<span class="n">y</span><span class="o">=</span><span class="n">matrix</span><span class="p">[:,</span><span class="mi">13</span><span class="p">]</span>
+<span class="n">fcor</span><span class="o">=</span><span class="n">matrix</span><span class="p">[:,</span><span class="mi">9</span><span class="p">]</span>
+<span class="n">pressure</span><span class="o">=</span><span class="n">matrix</span><span class="p">[:,</span><span class="mi">8</span><span class="p">]</span>
+<span class="n">thetas</span><span class="o">=</span><span class="n">matrix</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<p>The next piece of block defines the grid where gradient wind balance will be computed and creates the numpy array fields
+for both gradient wind and the interpolated 2D coriolis parameters. Height vector is defined m and radius vector is defined in
+km.</p>
+<div class="literal-block-wrapper docutils container" id="id11">
+<div class="code-block-caption"><span class="caption-text">Set-up</span><a class="headerlink" href="#id11" title="Permalink to this code">¶</a></div>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">ri</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">120</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">height_vec</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span><span class="mi">2500</span><span class="p">,</span><span class="mi">50</span><span class="p">)</span>
+<span class="n">gradwind3d</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">ri</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">height_vec</span><span class="p">)))</span>
+<span class="n">fcoriols2d</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">20</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">height_vec</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<p>The next section iterates over the height vector specified above (notice the user can tamper this vector).
+Subsequently, a threshold of 50 m (split in two directions) is used to obtain all points in the given height value of the height vector.
+In other words, all points in a 50 m layer are used to create the interpolated pressure field.
+Subsequently, the radial pressure gradient is computed using the function <a class="reference internal" href="../tools.html#toolbox.dp_dr" title="toolbox.dp_dr"><code class="xref py py-meth docutils literal"><span class="pre">toolbox.dp_dr()</span></code></a>.
+The coriolis parameter f is then re-scaled and saved in the 2D array.
+Finally gradient wind is approximated through the function <a class="reference internal" href="../tools.html#toolbox.getgradwind" title="toolbox.getgradwind"><code class="xref py py-meth docutils literal"><span class="pre">toolbox.getgradwind()</span></code></a>.</p>
+<div class="literal-block-wrapper docutils container" id="id12">
+<div class="code-block-caption"><span class="caption-text">Gradient -loop</span><a class="headerlink" href="#id12" title="Permalink to this code">¶</a></div>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="k">print</span><span class="p">(</span><span class="s1">&#39;Getting radial gradient of pressure and gradent wind&#39;</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">jindex</span><span class="p">,</span><span class="n">hh</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">height_vec</span><span class="p">):</span>
+
+  <span class="c1"># Selection</span>
+    <span class="n">indices</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">H</span><span class="o">&gt;=</span><span class="n">hh</span><span class="o">-</span><span class="mi">25</span><span class="p">)</span><span class="o">&amp;</span> <span class="p">(</span><span class="n">H</span><span class="o">&lt;</span><span class="n">hh</span><span class="o">+</span><span class="mi">25</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+
+  <span class="c1"># Quadratic interpolation</span>
+    <span class="n">interp_pres</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">polyfit</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="n">indices</span><span class="p">],</span><span class="n">pressure</span><span class="p">[</span><span class="n">indices</span><span class="p">],</span> <span class="n">deg</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="o">=</span><span class="n">interp_pres</span>
+    <span class="n">pres</span><span class="o">=</span><span class="n">a</span><span class="o">*</span><span class="n">ri</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="n">b</span><span class="o">*</span><span class="n">ri</span><span class="o">+</span><span class="n">c</span>
+
+  <span class="c1"># Linear interpolation of coriolis.</span>
+    <span class="n">finter</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">polyfit</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="n">indices</span><span class="p">],</span> <span class="n">fcor</span><span class="p">[</span><span class="n">indices</span><span class="p">],</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">fis</span><span class="o">=</span><span class="n">finter</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="n">ri</span><span class="p">)</span><span class="o">+</span><span class="n">finter</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+  <span class="c1">#Radial gradient of pressure ; new radius is now in m.</span>
+    <span class="n">dpdr</span><span class="p">,</span><span class="n">newradius</span><span class="o">=</span><span class="n">dp_dr</span><span class="p">(</span><span class="n">pres</span><span class="p">,</span><span class="n">ri</span><span class="p">)</span>
+
+  <span class="c1"># Unit change of f</span>
+    <span class="n">fis</span><span class="o">=</span><span class="n">fis</span><span class="o">*</span><span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="n">fcoriols2d</span><span class="p">[:,</span><span class="n">jindex</span><span class="p">]</span><span class="o">=</span><span class="n">fis</span>
+  <span class="c1">#Gradient wind function</span>
+    <span class="n">gradwind</span><span class="o">=</span><span class="n">getgradwind</span><span class="p">(</span><span class="n">dpdr</span><span class="p">,</span><span class="n">newradius</span><span class="p">,</span><span class="n">fis</span><span class="p">)</span>
+    <span class="n">gradwind3d</span><span class="p">[:,</span><span class="n">jindex</span><span class="p">]</span><span class="o">=</span><span class="n">gradwind</span>
+</pre></div>
+</div>
+</div>
+<p>The next block will then be concerned with plotting the obtain gradient wind evaluation as indicated and explained before through a 3 panel figure.
+Notice that the first step is to re-scale new radius since this variable was changed to m in the previous block.
+Then the figure object is created and the upper panel filled with the gradient wind plot, notice that this panel is anticipated to have slightly lower values than the azimuthal wind speed.
+Similar procedure goes for the azimuthal wind speed which, after being filled in the middle panel is used to compute the anomaly which is finally plotted in the last line of the block.
+This next block contains intermediate level commands, that have been documented before and are thus not explicitly explained in this section.</p>
+<p>The final block of the gradient wind plots, simply establishes figure title and saves, shows and closes the figure object (comment-uncomment as user chooses).
+.. code-block::python</p>
+<blockquote>
+<div><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">caption:</th><td class="field-body">Finalize plot</td>
+</tr>
+</tbody>
+</table>
+<p>plt.suptitle(‘Gradiend wind balance ‘+storm+’ on ‘+sdate,fontsize=16)
+#plt.savefig(‘figs/gradwind’+sdate+’.png’)
+#plt.show()
+plt.close()</p>
+</div></blockquote>
+</div>
+<div class="section" id="momentum">
+<h2>4.2. Momentum<a class="headerlink" href="#momentum" title="Permalink to this headline">¶</a></h2>
+<p>Angular momentum is a measure of the storm’s strength in the inertia of a TC to rotate and spin <a class="reference internal" href="../tools.html#bell2005" id="id5">[BM08]</a>.
+Several paradigms of TC intensification, such as <a class="reference internal" href="../tools.html#emanuel1986" id="id6">[Ema86]</a> and <a class="reference internal" href="../tools.html#montgomery2009" id="id7">[M+09]</a>, use momentum and momentum advection.
+In this sense, momentum fields and momentum advection is seen as a measure of storm intensity and the possibility of intensity change.</p>
+<p>Momentum is estimated through different approaches but this script follows the approach indicated by <a class="reference internal" href="../tools.html#bell2005" id="id8">[BM08]</a>.</p>
+<div class="math">
+\[M=rv+\frac{1}{2}fr^2\]</div>
+<p>where <span class="math">\(r\)</span> is the radius or distance to the centre of the storm, <span class="math">\(v\)</span> is the tangential velocity and <span class="math">\(f\)</span> is the coriolis parameter.
+This is estimated as the sum of a component associated with the coriolis parameter and another component of the tangential wind speed.
+As such <span class="math">\(M\)</span> is usually referred to as the specific absolute vertical angular momentum or absolute circulation.</p>
+<p>The following block computes the momentum fields iterating over the interpolated radii grid (ri).
+First, momentum array is defined and the interpolated tangential velocity is computed over the grid.
+Inside the radius loop, momentum is computed by three operations, first the estimation of the component associated with the tangential velocity and
+secondly, the (array) computation of the second term by slicing the coriolis vector and multiplying it for the iteration-radius.
+Momentum is then simply the addition of these two previous terms.</p>
+<div class="literal-block-wrapper docutils container" id="id13">
+<div class="code-block-caption"><span class="caption-text">Momentum estimation</span><a class="headerlink" href="#id13" title="Permalink to this code">¶</a></div>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">momentum</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">ri</span><span class="p">),</span><span class="nb">len</span><span class="p">(</span><span class="n">height_vec</span><span class="p">)))</span>
+<span class="n">vt_interp</span><span class="o">=</span><span class="n">scipy</span><span class="o">.</span><span class="n">interpolate</span><span class="o">.</span><span class="n">griddata</span><span class="p">((</span><span class="n">r</span><span class="p">,</span><span class="n">H</span><span class="p">),</span><span class="n">v_tang</span><span class="p">,</span> <span class="p">(</span><span class="n">ri</span><span class="p">[</span><span class="bp">None</span><span class="p">,:],</span> <span class="n">Hi</span><span class="p">[:,</span><span class="bp">None</span><span class="p">]),</span><span class="n">method</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span><span class="p">)</span>
+
+<span class="c1"># Radius loop</span>
+
+<span class="k">for</span> <span class="n">index</span><span class="p">,</span><span class="n">r0</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">newradius</span><span class="p">):</span>
+
+    <span class="n">vr</span><span class="o">=</span><span class="n">secondazi</span><span class="p">[:,</span><span class="n">index</span><span class="p">]</span><span class="o">*</span><span class="n">r0</span><span class="o">*</span><span class="mi">1000</span>
+    <span class="n">fr2</span><span class="o">=</span><span class="n">fcoriols2d</span><span class="p">[</span><span class="n">index</span><span class="p">,:]</span><span class="o">*</span><span class="p">(</span><span class="n">r0</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">momentum</span><span class="p">[</span><span class="n">index</span><span class="p">,:]</span><span class="o">=</span><span class="n">vr</span><span class="o">+</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span><span class="o">*</span><span class="n">fr2</span>
+</pre></div>
+</div>
+</div>
+<p>After filling the momentum array, the contour plot is produced using a standard array for the colour levels (levels)
+that starts from <span class="math">\(1\times 10^{6}\)</span> [<span class="math">\(m^2 s^{-1}\)</span>]. The colormap chosen is Spectral due to the high colour contrast between levels.
+The figure directory can be changed according to user’s os.</p>
+<div class="literal-block-wrapper docutils container" id="id14">
+<div class="code-block-caption"><span class="caption-text">Contour-plot.</span><a class="headerlink" href="#id14" title="Permalink to this code">¶</a></div>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">ri</span><span class="p">,</span><span class="n">Hi</span><span class="p">,</span><span class="n">momentum</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">levels</span><span class="o">=</span><span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span><span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;Spectral&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;$m^2 s^{-1}$&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Height [m]&#39;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Radius [km]&#39;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Momentum on &#39;</span><span class="o">+</span><span class="n">storm</span><span class="o">+</span><span class="s1">&#39; on &#39;</span><span class="o">+</span><span class="n">sdate</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span> <span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;figs/momentum&#39;</span><span class="o">+</span><span class="n">sdate</span><span class="o">+</span><span class="s1">&#39;.png&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="expected-gradient-balance-for-isabel-in-september-12-2005">
+<h2>4.3. Expected gradient balance for Isabel in September 12, 2005:<a class="headerlink" href="#expected-gradient-balance-for-isabel-in-september-12-2005" title="Permalink to this headline">¶</a></h2>
+<img alt="../_images/gradwind16_12-21_12.png" class="sphx-glr-single-img" src="../_images/gradwind16_12-21_12.png" />
+</div>
+<div class="section" id="expected-momentum-plots-for-isabel-in-september-12-2005">
+<h2>4.4. Expected momentum plots for Isabel in September 12, 2005:<a class="headerlink" href="#expected-momentum-plots-for-isabel-in-september-12-2005" title="Permalink to this headline">¶</a></h2>
+<img alt="../_images/momentum16_12-21_12.png" class="sphx-glr-single-img" src="../_images/momentum16_12-21_12.png" />
+<p>This script can be used by both inserting in the interface the name of storm and selecting the option create plots of the 3D kinematic structure.
+Similarly, this script can be used individually if the storm name, date and the filename are specified in the second block of this example.</p>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="plot_cape.html" class="btn btn-neutral float-right" title="4. Plot CAPE distributions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="plot_kinematic3D.html" class="btn btn-neutral" title="Plot vorticity and divergence in 3D views" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Garcia-Franco J.L..
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

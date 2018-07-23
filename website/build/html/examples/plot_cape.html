@@ -1,0 +1,503 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>4. Plot CAPE distributions &mdash; PyDropsondes 1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../_static/gallery.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="PyDropsondes 1 documentation" href="../index.html"/>
+        <link rel="up" title="Gallery of Examples" href="../gallery.html"/>
+        <link rel="prev" title="Evaluate gradient wind balance and momentum!" href="plot_gradwindbalanc.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../home.html" class="icon icon-home"> PyDropsondes
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Table of Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../interface.html">The Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../flight.html">Flightdata</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../process.html">Process Dropsondes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools.html">The Toolbox</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../gallery.html">Gallery of Examples</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="plotrack.html">1. Plotting the track of a Tropical Cyclone</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_intensity_series.html">2. Plotting the intensity metrics of a Tropical Cyclone</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_drift_dropsondes.html">3. Plot the drift of all dropsondes for a TC</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_winds_temp.html">Plot the wind and temperature structure of a TC</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_kinematic3D.html">Plot vorticity and divergence in 3D views</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_gradwindbalanc.html">Evaluate gradient wind balance and momentum!</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">4. Plot CAPE distributions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#skewt-log-p-plots">4.1. SkewT-log P plots.</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cape-distribution">4.2. CAPE Distribution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#expected-skewts-for-rita-in-september-21-2005">4.3. Expected skewTs for Rita in September 21, 2005 :</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#expected-cape-distribution-for-rita-in-september-21-2005">4.4. Expected CAPE distribution for Rita in September 21, 2005 :</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../gallery.html#examples-for-dummies">Examples for Dummies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gallery.html#intermediate-examples">Intermediate examples</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../home.html">PyDropsondes</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../home.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../gallery.html">Gallery of Examples</a> &raquo;</li>
+        
+      <li>4. Plot CAPE distributions</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/examples/plot_cape.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="plot-cape-distributions">
+<span id="sphx-glr-auto-examples-plot-cape-py"></span><h1>4. Plot CAPE distributions<a class="headerlink" href="#plot-cape-distributions" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<p>Convective Available Potential Energy (CAPE) is a thermodynamic metric of instability and therefore it is related to potential convection or weather events.
+While their use in TC studies is limited, providing a distribution plot of CAPE and CIN is considered a good visualization aid to understand how and where instabilities occur in a TC.</p>
+<p>This example will be based on three functions: <a class="reference internal" href="../tools.html#toolbox.cape_cin" title="toolbox.cape_cin"><code class="xref py py-meth docutils literal"><span class="pre">toolbox.cape_cin()</span></code></a>, <a class="reference internal" href="../tools.html#toolbox.parcel_profile" title="toolbox.parcel_profile"><code class="xref py py-meth docutils literal"><span class="pre">toolbox.parcel_profile()</span></code></a> and <a class="reference internal" href="../tools.html#toolbox._find_append_zero_crossings" title="toolbox._find_append_zero_crossings"><code class="xref py py-meth docutils literal"><span class="pre">toolbox._find_append_zero_crossings()</span></code></a> which were originally part of the <a class="reference external" href="https://unidata.github.io/MetPy/latest/index.html">Metpy</a> module.
+The specific formulas to obtain CAPE and CIN are documented in the functions themselves.</p>
+<p>This example has similarities with the main <span class="xref std std-ref">processing</span> but is different in essence since they have different objectives.
+As such, this code is also related to several functions in the toolbox, mainly:
+<a class="reference internal" href="../tools.html#toolbox.findproperties" title="toolbox.findproperties"><code class="xref py py-meth docutils literal"><span class="pre">toolbox.findproperties()</span></code></a>, <a class="reference internal" href="../tools.html#toolbox.getsamplingperiods" title="toolbox.getsamplingperiods"><code class="xref py py-meth docutils literal"><span class="pre">toolbox.getsamplingperiods()</span></code></a>, etc.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This example is not documented-inline but it is rather explained through the Sphinx-Gallery pages, i.e., through this text floating around
+on top of the text-block. This allows to have short but explained example files.</p>
+</div>
+<p>The first section of this example includes the preamble, which is highly documented in <code class="xref py py-meth docutils literal"><span class="pre">_sphx_glr_auto_examples_plot_drift.py()</span></code> and <a class="reference internal" href="../process.html#module-processing" title="processing"><code class="xref py py-meth docutils literal"><span class="pre">processing()</span></code></a>.
+In this case, import of functions from the toolbox is done through the use of <a href="#id1"><span class="problematic" id="id2">*</span></a>, a syntax that implies the import of all functions from toolbox.</p>
+<div class="literal-block-wrapper docutils container" id="id3">
+<div class="code-block-caption"><span class="caption-text">Preamble</span><a class="headerlink" href="#id3" title="Permalink to this code">¶</a></div>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">metpy.calc</span> <span class="kn">import</span> <span class="n">saturation_mixing_ratio</span>
+<span class="kn">from</span> <span class="nn">metpy.plots</span> <span class="kn">import</span> <span class="n">add_metpy_logo</span><span class="p">,</span> <span class="n">SkewT</span>
+<span class="kn">import</span> <span class="nn">metpy.calc</span> <span class="kn">as</span> <span class="nn">mpcalc</span>
+<span class="kn">from</span> <span class="nn">metpy.units</span> <span class="kn">import</span> <span class="n">units</span><span class="p">,</span><span class="n">concatenate</span>
+<span class="kn">from</span> <span class="nn">toolbox</span> <span class="kn">import</span> <span class="o">*</span>
+</pre></div>
+</div>
+</div>
+<p>The example is written as a function with three arguments:</p>
+<ol class="arabic simple">
+<li>filelist: <cite>list</cite> of dropsonde files.</li>
+<li>track: <cite>dictionary</cite> object with track output from flightdata.</li>
+<li>storm: <cite>str</cite> Name of storm.</li>
+</ol>
+<p>The next code-block defines the function and uses the same procedure as <span class="xref std std-ref">processing</span> to read the data, select Intense Observation Periods (IOPs) and discriminate between files in the sampling period.</p>
+<div class="literal-block-wrapper docutils container" id="id4">
+<div class="code-block-caption"><span class="caption-text">Function definition and Initial commands</span><a class="headerlink" href="#id4" title="Permalink to this code">¶</a></div>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1">#Sort filelist.</span>
+  <span class="n">filelist</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">filelist</span><span class="p">)</span>
+
+  <span class="c1"># Get sampling periods (this will be a dictionary). See the toolbox</span>
+  <span class="k">print</span><span class="p">(</span><span class="s1">&#39;Retrieving sampling periods&#39;</span><span class="p">)</span>
+  <span class="n">sampleperiods</span><span class="o">=</span><span class="n">getsamplingperiods</span><span class="p">(</span><span class="n">filelist</span><span class="p">,</span><span class="mf">3.</span><span class="p">)</span>
+
+  <span class="c1"># Iterate over all sampling periods.</span>
+  <span class="k">for</span> <span class="n">sampindex</span><span class="p">,</span><span class="n">periodskey</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sampleperiods</span><span class="p">):</span>
+
+      <span class="c1">#Allocate starting (stdt) and ending date (endt). Remeber dt is the convetional short-name for date.</span>
+      <span class="n">stdt</span><span class="o">=</span><span class="n">periodskey</span>
+      <span class="n">endt</span><span class="o">=</span><span class="n">sampleperiods</span><span class="p">[</span><span class="n">periodskey</span><span class="p">]</span>
+
+      <span class="c1"># Define sampling period string</span>
+      <span class="n">period</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">stdt</span><span class="o">.</span><span class="n">hour</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;_&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">stdt</span><span class="o">.</span><span class="n">day</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;-&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">endt</span><span class="o">.</span><span class="n">hour</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;_&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">endt</span><span class="o">.</span><span class="n">day</span><span class="p">)</span>
+      <span class="k">print</span><span class="p">(</span><span class="n">period</span><span class="p">)</span>
+      <span class="c1"># possible user print</span>
+      <span class="k">print</span><span class="p">(</span><span class="n">stdt</span><span class="p">,</span><span class="n">endt</span><span class="p">)</span>
+
+      <span class="c1"># Create new-empty lists.</span>
+      <span class="n">lats</span><span class="o">=</span><span class="p">[]</span>
+      <span class="n">lons</span><span class="o">=</span><span class="p">[]</span>
+      <span class="n">xs</span><span class="o">=</span><span class="p">[]</span>
+      <span class="n">ys</span><span class="o">=</span><span class="p">[]</span>
+      <span class="n">capes</span><span class="o">=</span><span class="p">[]</span>
+
+      <span class="c1"># Remove outputfile</span>
+      <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s1">&#39;rm temp_axisym.txt&#39;</span><span class="p">)</span>
+
+      <span class="k">print</span><span class="p">(</span><span class="s1">&#39;start filelist loop&#39;</span><span class="p">)</span>
+      <span class="c1"># Iterate over all files.</span>
+      <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">filelist</span><span class="p">:</span>
+
+
+
+          <span class="c1"># Select end-name of file by inspecting filename string. Notice how filename can change how file is read.</span>
+          <span class="k">if</span> <span class="s1">&#39;radazm&#39;</span> <span class="ow">in</span> <span class="n">filename</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="ow">or</span> <span class="s1">&#39;eol&#39;</span> <span class="ow">in</span> <span class="n">filename</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+              <span class="n">end</span><span class="o">=</span><span class="s1">&#39;radazm&#39;</span>
+          <span class="k">else</span><span class="p">:</span>
+              <span class="n">end</span><span class="o">=</span><span class="s1">&#39;avp&#39;</span>
+          <span class="c1"># Obtain properties of file, i.e., launch time and location into a dictionary (dicc).</span>
+          <span class="n">dicc</span><span class="o">=</span><span class="n">findproperties</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="n">end</span><span class="p">)</span>
+
+          <span class="c1"># Condition to see if current file is in sampling period.</span>
+          <span class="c1"># Notice how if structure is constructed, condition finds times outside of sampling period and</span>
+          <span class="c1"># if found outside the sampling period, continue to next file.</span>
+          <span class="k">if</span> <span class="n">dicc</span><span class="p">[</span><span class="s1">&#39;Launch Time&#39;</span><span class="p">]</span><span class="o">&lt;</span><span class="n">stdt</span> <span class="ow">or</span> <span class="n">dicc</span><span class="p">[</span><span class="s1">&#39;Launch Time&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">endt</span><span class="p">:</span>
+              <span class="k">continue</span>
+</pre></div>
+</div>
+</div>
+<p>The next block reads-in the file into a numpy array, as other scripts do. In this case, the block ends with a condition necessary to compute CAPE which is that the height of the sounding be over 3500 m.
+Other thresholds in pressure or height could be inserted in this block.
+Notice that all fields are imported from the selected column and, in place, are cleaned by functions from the toolbox.</p>
+<div class="literal-block-wrapper docutils container" id="id5">
+<div class="code-block-caption"><span class="caption-text">Height read and condition</span><a class="headerlink" href="#id5" title="Permalink to this code">¶</a></div>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">nump</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">genfromtxt</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="n">skip_header</span><span class="o">=</span><span class="n">head</span><span class="p">,</span><span class="n">skip_footer</span><span class="o">=</span><span class="n">foot</span><span class="p">)</span>
+<span class="n">temperature</span><span class="o">=</span><span class="n">clean1</span><span class="p">(</span><span class="n">nump</span><span class="p">[:,</span><span class="mi">5</span><span class="p">])</span>
+<span class="n">pressure</span><span class="o">=</span><span class="n">clean1</span><span class="p">(</span><span class="n">nump</span><span class="p">[:,</span><span class="mi">4</span><span class="p">])</span>
+<span class="n">Height</span><span class="o">=</span><span class="n">clean1</span><span class="p">(</span><span class="n">nump</span><span class="p">[:,</span><span class="mi">13</span><span class="p">])</span>
+<span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">Height</span><span class="p">)</span><span class="o">&lt;</span><span class="mi">3500</span><span class="p">:</span>
+    <span class="k">continue</span>
+</pre></div>
+</div>
+</div>
+<p>If the sounding has big enough height values, then the rest of the necessary fields are read-in and cleaned.
+Notice the use of <code class="xref py py-meth docutils literal"><span class="pre">cleanforcape()</span></code> and the change in variable names at this stage to distinguish between original and new fields.</p>
+<div class="literal-block-wrapper docutils container" id="id6">
+<div class="code-block-caption"><span class="caption-text">Clean for CAPE</span><a class="headerlink" href="#id6" title="Permalink to this code">¶</a></div>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">RelH</span><span class="o">=</span><span class="n">clean1</span><span class="p">(</span><span class="n">nump</span><span class="p">[:,</span><span class="mi">7</span><span class="p">])</span>
+<span class="n">lon</span><span class="o">=</span><span class="n">clean1</span><span class="p">(</span><span class="n">nump</span><span class="p">[:,</span><span class="mi">14</span><span class="p">])</span>
+<span class="n">lat</span><span class="o">=</span><span class="n">clean1</span><span class="p">(</span><span class="n">nump</span><span class="p">[:,</span><span class="mi">15</span><span class="p">])</span>
+<span class="n">lon</span><span class="o">=</span><span class="n">clean1</span><span class="p">(</span><span class="n">lon</span><span class="p">)</span>
+<span class="n">lat</span><span class="o">=</span><span class="n">clean1</span><span class="p">(</span><span class="n">lat</span><span class="p">)</span>
+<span class="n">mlon</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">lon</span><span class="p">)</span>
+<span class="n">mlat</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">lat</span><span class="p">)</span>
+<span class="n">RH</span><span class="o">=</span><span class="n">RelH</span><span class="o">/</span><span class="mi">100</span>
+<span class="n">T</span><span class="p">,</span><span class="n">P</span><span class="p">,</span><span class="n">rh</span><span class="p">,</span><span class="n">dz</span><span class="o">=</span><span class="n">cleanforcape</span><span class="p">(</span><span class="n">temperature</span><span class="p">,</span><span class="n">pressure</span><span class="p">,</span><span class="n">RH</span><span class="p">,</span><span class="n">Height</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>The next is to set-up the arrays to be used by the Metpy=derived functions. In this case, the insertion of units and the flip of the arrays.
+npflip changes the order of the arrays. Typically soundings are reported from the ground up, however, dropsondes are reported from above to below.
+To adjust this and mantain consistency between all arrays, np.flip function is used.
+Also used the metpy module to assign units to fields.</p>
+<div class="literal-block-wrapper docutils container" id="id7">
+<div class="code-block-caption"><span class="caption-text">Metpy set-up</span><a class="headerlink" href="#id7" title="Permalink to this code">¶</a></div>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">T</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="n">T</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">rh</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="n">rh</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">p</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="n">P</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">dz</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="n">dz</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">p</span><span class="o">=</span><span class="n">p</span><span class="o">*</span><span class="n">units</span><span class="o">.</span><span class="n">hPa</span>
+<span class="n">T</span><span class="o">=</span><span class="n">T</span><span class="o">*</span><span class="n">units</span><span class="o">.</span><span class="n">celsius</span>
+</pre></div>
+</div>
+</div>
+<p>After this, moisture metrics are calculated using metpy calc to first, obtain the mixing ratio, then the dewpoint temperature and
+finally obtain parcel profiles of temperature and virtual temperature.
+The last line of this block obtains cape and cin from the previous profiles of temperature and moisture.</p>
+<div class="literal-block-wrapper docutils container" id="id8">
+<div class="code-block-caption"><span class="caption-text">Dew-point and parce profile calculations</span><a class="headerlink" href="#id8" title="Permalink to this code">¶</a></div>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">mixing</span><span class="o">=</span><span class="n">rh</span><span class="o">*</span><span class="n">mpcalc</span><span class="o">.</span><span class="n">saturation_mixing_ratio</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">T</span><span class="p">)</span>
+<span class="n">epsilon</span><span class="o">=</span><span class="mf">0.6219800858985514</span>
+<span class="n">Tv</span><span class="o">=</span><span class="n">mpcalc</span><span class="o">.</span><span class="n">virtual_temperature</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">mixing</span><span class="p">,</span>
+                          <span class="n">molecular_weight_ratio</span><span class="o">=</span><span class="n">epsilon</span><span class="p">)</span>
+<span class="n">dwpoint</span><span class="o">=</span><span class="n">mpcalc</span><span class="o">.</span><span class="n">dewpoint_rh</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">rh</span><span class="p">)</span>
+
+<span class="n">blh_indx</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">dz</span><span class="o">&lt;</span><span class="mi">500</span><span class="p">)</span>
+
+<span class="n">parcelprofile</span><span class="o">=</span><span class="n">mpcalc</span><span class="o">.</span><span class="n">parcel_profile</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">T</span><span class="p">[</span><span class="n">blh_indx</span><span class="p">])</span><span class="o">*</span><span class="n">units</span><span class="o">.</span><span class="n">celsius</span><span class="p">,</span><span class="n">mpcalc</span><span class="o">.</span><span class="n">dewpoint_rh</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">T</span><span class="p">[</span><span class="n">blh_indx</span><span class="p">])</span><span class="o">*</span><span class="n">units</span><span class="o">.</span><span class="n">celsius</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">rh</span><span class="p">[</span><span class="n">blh_indx</span><span class="p">])))</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s1">&#39;degC&#39;</span><span class="p">)</span>
+<span class="n">Tv_parcelprofile</span><span class="o">=</span><span class="n">mpcalc</span><span class="o">.</span><span class="n">virtual_temperature</span><span class="p">(</span><span class="n">parcelprofile</span><span class="p">,</span> <span class="n">mixing</span><span class="p">,</span>
+                          <span class="n">molecular_weight_ratio</span><span class="o">=</span><span class="n">epsilon</span><span class="p">)</span>
+<span class="n">cape</span><span class="p">,</span><span class="n">cin</span><span class="o">=</span><span class="n">cape_cin</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">Tv</span><span class="p">,</span><span class="n">dwpoint</span><span class="p">,</span><span class="n">Tv_parcelprofile</span><span class="p">,</span><span class="n">dz</span><span class="p">,</span><span class="n">T</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="skewt-log-p-plots">
+<h2>4.1. SkewT-log P plots.<a class="headerlink" href="#skewt-log-p-plots" title="Permalink to this headline">¶</a></h2>
+<p>If decided by the user, typical SkewT plots can be done with the aid of the metpy module for each of the soundings accepted by this example.
+plotskewT is used as the boolean variable to decide wether or not to this plots.
+This example will use the option True to produce these plots.
+Keep in mind that the main task of this example is to plot the distribution of CAPE values and not precisely to produce the sonde type plots.</p>
+<p>As such, the next block produces the skewT plots and saves them in a specific folder created for the purpose of filling it with skewt plots.
+Notice the shade_cape functions are metpy functions and not exactly the ones used in our computations.
+The main purpose of this plot is to show typical behaviour of the sounding, the approximate CAPE and CIN and how moisture profiles influence thermodynamic profiles.
+The real estimation of CAPE, calculated above, is the one used for the distribution plot.
+The next block also contains metpy’s commands to make the plot stylish.</p>
+<div class="literal-block-wrapper docutils container" id="id9">
+<div class="code-block-caption"><span class="caption-text">SkewT plots.</span><a class="headerlink" href="#id9" title="Permalink to this code">¶</a></div>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">plotskewT</span><span class="o">=</span><span class="bp">True</span>
+<span class="k">if</span> <span class="n">plotskewT</span><span class="o">==</span><span class="bp">True</span><span class="p">:</span>
+<span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s1">&#39;mkdir figs/skewt&#39;</span><span class="p">)</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">9</span><span class="p">))</span>
+<span class="n">skew</span> <span class="o">=</span> <span class="n">SkewT</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">45</span><span class="p">)</span>
+<span class="n">skew</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">skew</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="o">-</span><span class="mi">40</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span>
+
+<span class="n">skew</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">dwpoint</span><span class="p">,</span> <span class="s1">&#39;g&#39;</span><span class="p">)</span>
+<span class="n">skew</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">Tv</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="o">-</span><span class="mi">140</span><span class="p">,</span><span class="mi">120</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">around</span><span class="p">(</span><span class="n">cape</span><span class="p">,</span><span class="mi">2</span><span class="p">)))</span>
+
+
+<span class="c1"># Plot the data using normal plotting functions, in this case using</span>
+<span class="c1"># log scaling in Y, as dictated by the typical meteorological plot</span>
+<span class="n">skew</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">Tv_parcelprofile</span><span class="p">,</span><span class="s1">&#39;k&#39;</span><span class="p">)</span>
+<span class="n">skew</span><span class="o">.</span><span class="n">shade_cin</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">parcelprofile</span><span class="p">)</span>
+<span class="n">skew</span><span class="o">.</span><span class="n">shade_cape</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">Tv</span><span class="p">,</span> <span class="n">Tv_parcelprofile</span><span class="p">)</span>
+<span class="n">skew</span><span class="o">.</span><span class="n">plot_dry_adiabats</span><span class="p">()</span>
+<span class="n">skew</span><span class="o">.</span><span class="n">plot_moist_adiabats</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">storm</span> <span class="o">+</span> <span class="s1">&#39; on&#39;</span> <span class="o">+</span> <span class="n">dicc</span><span class="p">[</span><span class="s1">&#39;Launch Time&#39;</span><span class="p">],</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;figs/skewt/&#39;</span><span class="o">+</span><span class="n">storm</span><span class="o">+</span><span class="n">dicc</span><span class="p">[</span><span class="s1">&#39;Launch Time&#39;</span><span class="p">]</span><span class="o">+</span><span class="s1">&#39;.png&#39;</span><span class="p">)</span>
+<span class="c1">#plt.show()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="cape-distribution">
+<h2>4.2. CAPE Distribution<a class="headerlink" href="#cape-distribution" title="Permalink to this headline">¶</a></h2>
+<p>After having done this, the next section will create and plot the scatter of observations around the centre of the storm.
+In other words, plot a point where each dropsonde is located, however, the colour of the marker will describe the CAPE value using a jet colormap.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The following block has different identation than the operational example since the control if should be idented to the right since it is part of the main for loop.
+Identation is ignored in the block for visual purposes.</p>
+</div>
+<div class="literal-block-wrapper docutils container" id="id10">
+<div class="code-block-caption"><span class="caption-text">Planview fill.</span><a class="headerlink" href="#id10" title="Permalink to this code">¶</a></div>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">r</span><span class="p">,</span><span class="n">theta</span><span class="o">=</span><span class="n">cart_to_cylindr</span><span class="p">(</span><span class="n">mlon</span><span class="p">,</span><span class="n">mlat</span><span class="p">,</span><span class="n">track</span><span class="p">,</span><span class="n">dicc</span><span class="p">[</span><span class="s1">&#39;Launch Time&#39;</span><span class="p">])</span>
+<span class="k">if</span> <span class="ow">not</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">r</span><span class="p">))</span> <span class="ow">and</span> <span class="ow">not</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">theta</span><span class="p">))</span> <span class="ow">and</span> <span class="ow">not</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">cape</span><span class="o">.</span><span class="n">magnitude</span><span class="p">)):</span>
+    <span class="n">xs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">))</span>
+    <span class="n">ys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">))</span>
+    <span class="n">capes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cape</span><span class="o">.</span><span class="n">magnitude</span><span class="p">)</span>
+    <span class="n">cins</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cin</span><span class="p">)</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">13</span><span class="p">,</span> <span class="mi">9</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span><span class="n">ys</span><span class="p">,</span><span class="n">c</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">capes</span><span class="p">),</span><span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;jet&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">xi</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">xs</span><span class="p">):</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span><span class="n">ys</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">+</span><span class="mi">10</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">around</span><span class="p">(</span><span class="n">capes</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="mi">1</span><span class="p">)))</span>
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id11">
+<div class="code-block-caption"><span class="caption-text">Save and customize CAPE distribution plots.</span><a class="headerlink" href="#id11" title="Permalink to this code">¶</a></div>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$J/kg$&#39;)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">marker</span><span class="o">=</span><span class="s1">&#39;v&#39;</span><span class="p">,</span><span class="n">s</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;X distance [km]&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Y distance [km]&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;CAPE distribution for &#39;</span><span class="o">+</span><span class="n">storm</span><span class="o">+</span><span class="s1">&#39; on &#39;</span><span class="o">+</span><span class="n">period</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;figs/cape&#39;</span><span class="o">+</span><span class="n">storm</span><span class="o">+</span><span class="n">period</span><span class="o">+</span><span class="s1">&#39;.png&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="expected-skewts-for-rita-in-september-21-2005">
+<h2>4.3. Expected skewTs for Rita in September 21, 2005 :<a class="headerlink" href="#expected-skewts-for-rita-in-september-21-2005" title="Permalink to this headline">¶</a></h2>
+<img alt="../_images/Rita01:10:31.png" class="sphx-glr-single-img" src="../_images/Rita01:10:31.png" />
+</div>
+<div class="section" id="expected-cape-distribution-for-rita-in-september-21-2005">
+<h2>4.4. Expected CAPE distribution for Rita in September 21, 2005 :<a class="headerlink" href="#expected-cape-distribution-for-rita-in-september-21-2005" title="Permalink to this headline">¶</a></h2>
+<img alt="../_images/capeRita15_21-1_22.png" class="sphx-glr-single-img" src="../_images/capeRita15_21-1_22.png" />
+<p>This script can be used by both inserting in the interface the name of storm and selecting the option to do the</p>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="plot_gradwindbalanc.html" class="btn btn-neutral" title="Evaluate gradient wind balance and momentum!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Garcia-Franco J.L..
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

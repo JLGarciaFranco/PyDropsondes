@@ -1,0 +1,222 @@
+.. _sphx_glr_auto_examples_plot_drift_dropsondes.py:
+
+Plot the drift of all dropsondes for a TC
+=====================================================
+
+This example gives the typical plot that locates the dropsonde in a storm relative framework.
+Typically, this plot is shown in a cartesian coordinate system :math:`(x,y)`, however, this example does it
+in cylindrical coordinates :math:`(r,\theta)`, since, actually, to plot
+the dropsonde location in cartesian coordinates one must first, estimate :math:`r` and :math:`theta`.
+The script has commented-out lines where the plot can also be done in cartesian coordinates.
+
+This plot requires the use of the all-powerful :meth:`interface` and it is not written as a standalone script.
+However, the main function :meth:`toolbox.plotdrift` can be used separately if all arguments are properly provided.
+
+
+Specifically, the `best track <https://www.nhc.noaa.gov/data/#hurdat>`_ dataset, provides the maximum sustained winds at 10 m altitude (hereafter :math:`U_{10}`)
+and the minimum surface pressure (hereafter :math:`P_{min}`).
+
+.. code-block:: python
+    :caption: Preamble
+
+    # matplotlib is the main module in python for plotting.
+    import matplotlib.pyplot as plt
+    # Numpy is our friend, it is the most important module.
+    import numpy as np
+    # Dates and time module
+    import datetime
+    # Pandas, unlike the bear, is used by python to read-in databases, in this case for the track database.
+    import pandas as pd
+    # Import datetime module for handling date objects.
+    import datetime
+    # Import glob module to rapidly access all files in a folder.
+    import glob
+    # Import scipy module with the packaged of interpolate, in particular, get the function griddata (scipy can be heavy)
+    from scipy.interpolate import griddata
+    # Import all functions from toolbox.
+    from toolbox import *
+    # Import module to get-in the operating system
+    import os
+
+The following block makes use of the functions :meth:`toolbox.findproperties`,:meth:`toolbox.getsamplingperiods`
+
+.. code-block:: python
+
+
+    # Define function and arguments (refer to Sphinx)
+    def plotdrift(filelist,end,track,storm):
+            # Outpudirectory
+            figdir='/home/jlgf/Documents/MRes/Project/figs/'+storm+'/'
+            # Create outputdirectory if non existent.
+            os.system('mkdir ../figs/'+storm)
+            # Get period sampling as a dictionary
+            sampleperiods=getsamplingperiods(filelist,3.)
+
+            # First iteration is over the sampling periods to produce one plot for each sampling period.
+            for sampindex,periodskey in enumerate(sampleperiods):
+                # The starting date (sdt) is the key of the dictionary, the value is then the end date (endt)
+                sdt=periodskey
+                endt=sampleperiods[periodskey]
+                # Print so user knows what time-span corresponds to this plot.
+                print(sdt,endt)
+
+                # Create empty lists.
+                lats=[]
+                lons=[]
+                rmaxis=[]
+                x=np.array([])
+                y=[]
+                dates=[]
+                maxr=10
+
+                #Create figure object with size of 11 megapixels and 9 megapixels.
+                plt.figure(figsize=(11,9))
+                # Make figure polar
+                ax = plt.subplot(111, projection='polar')
+                # Iterate over dropsondes files.
+                for filename in filelist:
+                    # Establish type of file.
+                    if 'radazm' in filename.split('/')[-1] or 'eol' in filename.split('/')[-1]:
+                    	end='radazm'
+                    else:
+                    	end='avp'
+                    # Get information from files.
+                    dicc=findproperties(filename,end)
+                    # Evaluate if current file is in sampling period.
+                    if dicc['Launch Time']>=endt or dicc['Launch Time'] <= sdt:
+                    # Following print can be enabled to see which files correspond to each plot but this can also saturate printing screen.
+                    #	print('out of period')
+                    	continue
+
+                    # Read-in data.
+                    # Notice the following control sequence could have been inserted in line 65-68 above but read-in of data can be computationally expensive so we only read all fields
+                    # if current file is in sampling period. This control sequence observes the end of th file.
+                    if end =='avp':
+
+                        # The following description is the same for the end of file =='radazm'
+                        # Specify header and footer lengths
+                        head=6
+                        foot=19
+
+                        # Allocate indexes in file for longitude and latitude.
+                        longindex=11
+                        latindex=12
+
+                        nump=np.genfromtxt(filename,skip_header=head,skip_footer=foot)
+
+                        # Obtain hours minutes and seconds of measurement.
+                        yymmdd=nump[:,3]
+                        hhmmss=nump[:,4]
+                        hours,minutes,seconds=timeconversion(hhmmss)
+
+                    elif end == 'radazm':
+                        # as for 'avp'
+                        head=16
+                        foot=19
+                        longindex=14
+                        latindex=15
+                        nump=np.genfromtxt(filename,skip_header=head,skip_footer=foot)
+                        hours=nump[:,1]
+                        minutes=nump[:,2]
+                        seconds=nump[:,3]
+
+                    # Read in file, it is a numpy nd-array, which is suitable for the variable name of nump.
+
+                    # Allocate variables.
+                    lon=nump[:,longindex]
+                    lat=nump[:,latindex]
+
+                    # Clean arrays from possible errors.
+                    lon=clean1(lon)
+                    lat=clean1(lat)
+
+                    # Check for empty arrays, if empty, continue to next file.
+                    if np.isnan(np.nanmean(lon)) or np.isnan(np.nanmean(lat)):
+                    	print('NaN error')
+                    	continue
+
+                    # Estimate r and theta from the file.
+                    r,theta=xytorth(np.nanmean(lon),np.nanmean(lat),track,dicc['Launch Time'])
+
+                    # If distance is greater than 200 km, this dropsonde is not of interest, then continue to next file.
+                    if r>200:
+                    	continue
+
+                    # Emtpy lists to allocate for plotting.
+                    xs=[]
+                    ys=[]
+                    rs=[]
+                    thetas=[]
+                    # Iteration over longitude array.
+                    # Break lon in a enumerated tuple where j is the main index.
+                    for j,longi in enumerate(lon):
+                        # Create datetime object using dictionary date and file hours/minutes/seconds
+                        date=datetime.datetime(dicc['Launch Time'].year,dicc['Launch Time'].month,dicc['Launch Time'].day,int(hours[j]),int(minutes[j]),int(seconds[j]))
+
+                        # If latitude or longitude are NAN's then continue to next value.
+                        if np.isnan(longi) or np.isnan(lat[j]):
+                        	continue
+
+                        # try and get r and theta from values, see sphinx toolbox.
+                        try:
+                        	r,theta=xytorth(longi,lat[j],track,date)
+                        except:
+                        	continue
+
+                        # Add values to lists.
+                        rs.append(r)
+                        thetas.append(theta)
+                        xs.append(r*np.cos(theta))
+                        ys.append(r*np.sin(theta))
+
+                    # Condtion to find outer edge of plot and make plot customized to current tiem period.
+                    # This if only selects the biggest radius (maxr) found across the time=period.
+                    if np.nanmax(rs)>maxr:
+                        maxr=np.nanmax(rs)
+
+                    # Plot all thetas and radius.
+                    ax.plot(thetas,rs,linewidth=3)
+
+                print('end of filelist loop')
+
+                # Select ticks based on maximum radius.
+                rticks=np.arange(0,maxr+10,25)
+
+                ## Sequence to obtain Radius of Maximum Wind (RMW) from flight-level data.
+                rms=track[3]['Rmax']
+                ris=0
+                counti=0
+                # Loop to find all RMW close to this datetime.
+                for i,key in enumerate(rms):
+                	if key>date-datetime.timedelta(hours=6) and key<dicc['Launch Time']+datetime.timedelta(hours=1):
+                		ris+=rms[key]
+                		counti+=1
+                # Average to get a mean RMW of the period.
+                if counti!=0:
+                	rmax=ris/counti
+
+                # Make array of RMW of idntical shape as a plotting array (thetai) to be able to plot RMW.
+                rmaxis=[]
+                for thetai in np.arange(0,3*np.pi,np.pi/10):
+                    rmaxis.append(rmax)
+
+                # Plot RMW.
+                ax.plot(np.arange(0,3*np.pi,np.pi/10.),rmaxis,linewidth=3,color='k')
+
+                # Plot settings.
+                ax.set_title('Dropsonde drift for '+storm+' on '+str(sdt),fontsize=16)
+                # Set raidus ticks and position.
+                ax.set_rticks(rticks)
+                ax.set_rlabel_position(135.)
+
+                # Add customized-grid.
+                ax.grid(alpha=0.5,linestyle='--')
+
+                # Show Plot.
+                plt.show()
+
+Expected plot for Isabel in September 12, 2003 :
+------------------------------------------------
+
+.. image:: figs/drift_isabel_12.png
+    :class: sphx-glr-single-img

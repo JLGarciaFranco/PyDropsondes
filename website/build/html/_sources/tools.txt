@@ -1,0 +1,63 @@
+.. Toolbox
+
+The Toolbox
+========================
+
+The toolbox is the python-module where all recursive, repeated or long functions are
+stored. It is quite the miscelanous code wrapper and, as such, it includes a wide range of functions
+for multiple purposes.
+
+.. toctree::
+   :numbered:
+   :maxdepth: 3
+   :caption: Contents:
+
+.. autosummary::
+
+  toolbox.distance
+  toolbox.potential_temperature
+  toolbox.dp_dr
+  toolbox.getgradwind
+
+.. automodule:: toolbox
+.. autofunction:: clean1
+.. autofunction:: timeconversion
+.. autofunction:: potential_temperature
+.. autofunction:: dp_dr
+.. autofunction:: getgradwind
+.. autofunction:: findproperties
+.. autofunction:: stormu
+.. autofunction:: getrack
+.. autofunction:: getsamplingperiods
+.. autofunction:: divergence
+
+Cape related metrics
+----------------------
+CAPE is a measure of severe weather events and is useful for weather forecasts of rain and winds.
+However, in TCs it has found to be a less useful metric since their distribution and magnitude is not related to storm's intensity or intensity change.
+
+Functions below were originally from Metpy module and have been modified for this project's needs to compute Convective Available Potential Energy
+from the dropsoundings.
+
+.. autofunction:: _find_append_zero_crossings
+.. autofunction:: parcel_profile
+.. autofunction:: cape_cin
+
+
+Cartesian to Cylindrical system change
+----------------------------------------
+
+Tropical Cyclones are better represented in a cylindrical system, where the distance to the center and the azimuth angle
+describe the system.
+The following set of functions are related to his tricky process and could be considered a keystone of this Computer Project.
+
+.. autofunction:: cart_to_cylindr
+.. autofunction:: distance
+.. autofunction:: plotdrift
+.. autofunction:: getcenter
+
+
+.. autofunction:: equivalent_potential_temperature
+
+
+.. bibliography:: fulltropical.bib

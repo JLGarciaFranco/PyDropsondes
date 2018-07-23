@@ -81,7 +81,7 @@ def read_process_write(filelist,track,storm):
             inten,Ic=periodI(storm,stdt.year,stdt,endt)
             print(inten,Ic)
 #            continue
-            # Obtain Intensity and Intensity Change metrics 
+            # Obtain Intensity and Intensity Change metrics
 #            continue
 
             # Define sampling period string

@@ -1,0 +1,8 @@
+.. Userguide
+
+User guide
+========================
+
+PyDropsondes is based on the interaction between a user (you) and the python-based scripts (aka, me).
+Through a series of screen and key-board interactions the script will communicate with the user in order to select, process and create plots requested by the user.
+This page provides a short description on how a new user might start to use PyDropsondes and possible problems that may arise when attempting to use this toolkit.

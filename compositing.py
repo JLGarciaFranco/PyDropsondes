@@ -54,7 +54,7 @@ def get_Rmax(track,startdate,endate):
     		ris.append(rms[key])
     return np.nanmean(ris)
 
-directorynames=['/gps.qc.eol/GIV/','/ublox.qc.eol/GIV/','/gps.qc.eol/P-3.43/','/ublox.qc.eol/P-3.43/','/gps.qc.eol/P-3.42/','/ublox.qc.eol/noaa.P-3/','/ublox.qc.eol/P-3.42/','/gps.qc.eol/USAF/']
+directorynames=['/gps.qc.eol/GIV/','/ublox.qc.eol/GIV/','/gps.qc.eol/P-3.43/','/ublox.qc.eol/P-3.43/','/gps.qc.eol/P-3.42/','/ublox.qc.eol/noaa.P-3/','/ublox.qc.eol/P-3.42/','/gps.qc.eol/USAF/','/ublox.qc.eol/USAF/']
 home=os.getcwd()
 home=home+'/'
 datadir=home+'/'
@@ -73,6 +73,9 @@ for i in range(1999,2013):
             filelist=filelist+glob.glob(home+'/Data/'+year+'/'+storm+direct+'*')
             filelist=glob.glob(home+'/Data/'+year+'/Hawk/*')+filelist
         filelist=np.sort(filelist)
+        print(storm,year)
+        if storm=='Hawk':
+            continue
         sampleperiods=getsamplingperiods(filelist,3.)
         try:
             os.system('cp /media/jlgf/Seagate\ Expansion\ Drive/FlightData/v1.1/*'+year+'*'+storm.upper()+'* '+'Data/'+year+'/'+storm+'/')
@@ -107,7 +110,17 @@ for i in range(1999,2013):
             else:
                 fdd=str(endt.day)
             period=dd+hh+'-'+fdd+fhh
-
+            inten,Ic=periodI(storm,stdt.year,stdt,endt)
+            if np.isnan(inten) or np.isnan(np.mean(Ic)):
+                continue
+            line=storm+','+str(stdt)+','+str(endt)+','+str(inten)+','+str(Ic[0])+'\n'
+            f=open('comp_metadata/I_IOPs.txt','r')
+            lines=f.readlines()
+            f.close()
+#            f=open('comp_metadata/I_IOPs.txt','a')
+            #if line in lines:
+            #    continue
+            del lines
             dropsincore=0
             outerdrops=0
             #print('start filelist loop')
@@ -187,20 +200,34 @@ for i in range(1999,2013):
                 else:
                     outerdrops+=1
             if dropsincore<13:
-                continue
-            elif dropsincore>8 and outerdrops>5:
-                print('Missing few dropsondes')
-                print(storm,stdt,endt)
+                if dropsincore>8 and outerdrops>5:
+                    print('Missing few dropsondes')
+                    print(storm,stdt,endt)
+                else:
+                    continue
+            else:
+                print('Writing to file '+storm+str(period))
+
             if np.isnan(get_Rmax(track,stdt,endt)):
                 rmax=np.nan
             else:
                 rmax=int(get_Rmax(track,stdt,endt))
             inten,Ic=periodI(storm,stdt.year,stdt,endt)
-            if np.isnan(inten) or np.isnan(np.mean(Ic)):
-                continue
-            f=open('comp_metadata/I_IOPs.txt','a')
-            f.write(storm+','+str(stdt)+','+str(endt)+','+str(inten)+','+str(Ic)+'\n')
-            f.close()
+
+            line=storm+','+str(stdt)+','+str(endt)+','+str(inten)+','+str(Ic[0])+'\n'
+            try:
+                f=open('comp_metadata/I_IOPs.txt','r')
+
+                lines=f.readlines()
+                f.close()
+                f=open('comp_metadata/I_IOPs.txt','a')
+                if line not in lines:
+                    f.write(line)
+                f.close()
+            except:
+                f=open('comp_metadata/I_IOPs.txt','a')
+                f.write(line)
+                f.close()
             # Intensity-categories.
             if int(inten)>113:
                 filename='comp_metadata/h4_5.txt'
@@ -212,8 +239,13 @@ for i in range(1999,2013):
                 filename='comp_metadata/h1.txt'
             else:
                 filename='comp_metadata/tstd.txt'
+            f=open(filename,'r')
+            lines=f.readlines()
+            f.close()
             f=open(filename,'a')
-            f.write(storm+','+str(stdt)+','+str(endt)+','+str(inten)+','+str(Ic)+','+str(dropsincore+outerdrops)+','+str(rmax)+'\n')
+            line=storm+','+str(stdt)+','+str(endt)+','+str(inten)+','+str(Ic[0])+','+str(dropsincore+outerdrops)+','+str(rmax)+'\n'
+            if line not in lines:
+                f.write(line)
             f.close()
 
             #IC categories
@@ -224,8 +256,13 @@ for i in range(1999,2013):
                 ICfile='comp_metadata/We.txt'
             else:
                 ICfile='comp_metadata/SS.txt'
+            line=storm+','+str(stdt)+','+str(endt)+','+str(inten)+','+str(Ic[0])+','+str(dropsincore+outerdrops)+','+str(rmax)+'\n'
+            f=open(ICfile,'r')
+            lines=f.readlines()
+            f.close()
             f=open(ICfile,'a')
-            f.write(storm+','+str(stdt)+','+str(endt)+','+str(inten)+','+str(Ic)+','+str(dropsincore+outerdrops)+','+str(rmax)+'\n')
+            if line not in lines:
+                f.write(line)
             f.close()
 
     # STAts COMPOSITES

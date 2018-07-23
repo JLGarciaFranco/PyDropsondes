@@ -61,8 +61,8 @@ for indice in df.index:
     series=df.loc[indice]
 
     storm=series['Storm']
-    icstring=series['IC'][1:-2]
-    Ic=int(icstring)
+#    icstring=series['IC'][1:-2]
+    Ic=int(series['IC'])
     print(Ic)
     I=np.nanmean(int(series['I']))
     if int(I)>113:
@@ -81,7 +81,7 @@ for indice in df.index:
     elif Ic<=-10:
         ifolder='/we/'
     else:
-        ifolder='/ss'
+        ifolder='/ss/'
 
     try:
         start=datetime.datetime.strptime(series['Start'],'%Y-%m-%d %H:%M:%S')

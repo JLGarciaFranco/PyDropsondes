@@ -618,7 +618,7 @@ def findproperties(filename,database):
 	f=open(filename,'r')
 	lineas=f.readlines()
 	f.close()
-
+	#print(filename)
 	# Create dictionary and define their keys.
 	diccionario={'Sounding name':' ','lon,lat,alt':' ','Launch Time':' '}
 
@@ -627,7 +627,7 @@ def findproperties(filename,database):
 	if database=='avp':
 		lname=lineas[indexes[0]].split(':')
 		if 'Name' in lname[0]:
-			
+
 			print('good sounding')
 #		if 'Name' not in lname[0]:
 #			if len(lineas[-14]:
@@ -635,7 +635,7 @@ def findproperties(filename,database):
 			indexes=[-18,-7,-16]
 			if len(lineas[indexes[2]].split('):'))<2:
 				indexes=[-16,-5,-14]
-				
+
 	# Select lines (l) of the name of sounding (lname), location (location) and time (ltime).
 	lname=lineas[indexes[0]].split(':')
 	location=lineas[indexes[1]].split(':')
@@ -668,8 +668,13 @@ def findproperties(filename,database):
 	try:
 		diccionario['Launch Time']=datetime.datetime.strptime(clear_white,formato)
 	except:
-		formato='%Y/%m/%d, %H:%M:%S\n'
-		diccionario['Launch Time']=datetime.datetime.strptime(clear_white,formato)
+		try:
+			formato='%Y-%m-%d, %H:%M:%S\n'
+			diccionario['Launch Time']=datetime.datetime.strptime(clear_white,formato)
+		except:
+			formato='%Y/%m/%d, %H:%M:%S\n'
+			diccionario['Launch Time']=datetime.datetime.strptime(clear_white,formato)
+
 
 
 	# Similar routine to clean sounding Name.
