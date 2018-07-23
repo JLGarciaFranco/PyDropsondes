@@ -1,0 +1,31 @@
+.. Userguide
+
+User guide
+========================
+
+PyDropsondes is based on the interaction between a user (you) and the python-based scripts (aka, me).
+Through a series of screen and key-board interactions the script will communicate with the user in order to select, process and create plots requested by the user.
+This page provides a short description on how a new user might start to use PyDropsondes and possible problems that may arise when attempting to use this toolkit.
+
+Roughly, PyDropsondes currently works as a user interface on a Linux command-line that interacts with the user to perform computations on dropsonde data suited to the users needs.
+For this purpose, the interface uses manual input from the user to select the storm and secondly to produce desired output.
+
+From the :ref:`gallery` section, several examples are shown of possible output created with this toolbox.
+The interface provides menus to choose from to select desired output (see :ref:`interface`).
+
+A flowchart is presented below that details how the toolbox is constructed and operates showing the use of several python instances and
+the need to create two files, a temporary and a period file. A temporary file is a file written while processing the dropsondes that is then used
+to perform cylindrical wind computations. The period file is the final file with all measured and initially computed fields that are used to produce the output.
+
+
+.. figure:: imgs/scriptflowchart.png
+  :align: center
+
+
+  Flowchart created with Dia of the PyDropsonde basic computing algorithm.
+
+In short, results from a run from the PyDropsondes toolkit will include processed files and figure output (png files) that were requested by the user.
+
+To quick-start PyDropsondes, go into the scripts folder where the main file (main.py) is located and run.
+
+>>> python3 main.py 

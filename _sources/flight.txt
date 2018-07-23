@@ -1,0 +1,42 @@
+.. Flightdata
+
+Flightdata
+========================
+
+Aircrafts are one of the best (and more expensive) tools to make in-situ samplings of the atmosphere
+with good spatial resolution.
+In fact, Tropical Cyclones are one of the best suited phenomena to be sampled through the use of aircraft measurements due
+to the predicaments and perils associated with the high winds and precipitation in these convective systems.
+
+After several successful attempts to sample Tropical Cyclones using aircraft, some remote sensing and in-situ instruments were deployed
+on-board. As time elapsed, campaigns from `NOOA <https://www.omao.noaa.gov/learn/aircraft-operations/about/hurricane-hunters>`_, NASA and the US Air Force
+have used radiometers, micrometers, radars, etc. These instruments are used to measure wind, reflectivity and other fields along the track of the aircraft.
+In 2015, :cite:`vigh2015flight` made public a dataset of flight level data that can be downloaded `here <https://verif.rap.ucar.edu/tcdata/flight/>`_.
+
+From this flight level data three main parameters are used:
+
+1) Storm track with resolution in the order of minutes.
+2) Storm speed and motion with resolution in the order of tens of minutes.
+3) Radius of Maximum wind timeseries (resolution of :math:`\sim` 10 minutes).
+
+Combined with the data of these instruments, this module also reads-in data from the `best track <https://www.nhc.noaa.gov/data/#hurdat>`_ dataset to read-in this track and join it with the
+one from the flight-level data.
+
+.. figure:: imgs/giv.jpg
+    :width: 65%
+    :align: center
+
+    NOAA’s Gulfstream IV-SP (G-IV) typically used to sample the environment of Tropical Cyclones and usually launches
+    dropsondes from high altitudes (:math:`>10` km).
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+
+
+.. automodule:: flightdata
+.. autofunction:: trackandspeed
+
+
+.. bibliography:: fulltropical.bib

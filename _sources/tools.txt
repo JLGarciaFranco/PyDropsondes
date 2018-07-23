@@ -1,0 +1,82 @@
+.. Toolbox
+
+The Toolbox
+========================
+
+The toolbox is the python-module where all recursive, repeated or long functions are
+stored. It is quite the miscellaneous code wrapper and, as such, it includes a wide range of functions
+for multiple purposes.
+
+.. toctree::
+   :numbered:
+   :maxdepth: 3
+   :caption: Contents:
+
+
+Frequently used functions
+----------------------------
+
+.. autosummary::
+
+  toolbox.distance
+  toolbox.cart_to_cylindr
+  toolbox.stormu
+  toolbox.findproperties
+
+.. automodule:: toolbox
+.. autofunction:: clean1
+.. autofunction:: clean2
+.. autofunction:: cleanu
+.. autofunction:: timeconversion
+.. autofunction:: getsamplingperiods
+.. autofunction:: findproperties
+
+
+Cartesian to Cylindrical system change
+----------------------------------------
+
+Tropical Cyclones are better represented in a cylindrical system, where the distance to the center and the azimuth angle
+describe the system.
+The following set of functions are related to his tricky process and could be considered a keystone of this Computer Project.
+
+.. autofunction:: cart_to_cylindr
+.. autofunction:: distance
+.. autofunction:: plotdrift
+.. autofunction:: getcenter
+
+Kinematic and Thermodynamic Metrics
+--------------------------------------
+.. autofunction:: getgradwind
+.. autofunction:: equivalent_potential_temperature
+.. autofunction:: dp_dr
+.. autofunction:: convergence_vorticity
+.. autofunction:: stormu
+.. autofunction:: potential_temperature
+
+
+
+CAPE related metrics
+----------------------
+CAPE is a measure of severe weather events and is useful for weather forecasts of rain and winds.
+However, in TCs it has found to be a less useful metric since their distribution and magnitude is not related to storm's intensity or intensity change.
+
+Functions below were originally from Metpy module and have been modified for this project's needs to compute Convective Available Potential Energy
+from the dropsoundings.
+
+.. autofunction:: _find_append_zero_crossings
+.. autofunction:: parcel_profile
+.. autofunction:: cape_cin
+.. autofunction:: cleanforcape
+
+
+
+
+Other functions
+------------------
+.. autofunction:: getrack
+.. autofunction:: plotdrift
+
+
+
+
+.. bibliography:: fulltropical.bib

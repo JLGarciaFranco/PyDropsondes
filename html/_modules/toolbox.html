@@ -1,0 +1,1398 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>toolbox &mdash; PyDropsondes 1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../_static/gallery.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../_static/theme_override.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="PyDropsondes 1 documentation" href="../index.html"/>
+        <link rel="up" title="Module code" href="index.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../home.html" class="icon icon-home"> PyDropsondes
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Table of Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../userguide.html">User guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../interface.html">The Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../flight.html">Flightdata</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../process.html">Process Dropsondes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools.html">The Toolbox</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gallery.html">Gallery of Examples</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../home.html">PyDropsondes</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../home.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Module code</a> &raquo;</li>
+        
+      <li>toolbox</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for toolbox</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Elementary tools for the DOT</span>
+<span class="sd">-----------------------------</span>
+
+<span class="sd">The functions found below are completely random and might no be related with one another.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="k">import</span> <span class="n">griddata</span>
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="k">import</span> <span class="n">interpolate</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="k">import</span> <span class="n">sin</span><span class="p">,</span> <span class="n">cos</span><span class="p">,</span> <span class="n">sqrt</span><span class="p">,</span> <span class="n">atan2</span><span class="p">,</span> <span class="n">radians</span>
+<span class="kn">import</span> <span class="nn">metpy.calc</span> <span class="k">as</span> <span class="nn">mpcalc</span>
+<span class="kn">from</span> <span class="nn">metpy.calc</span> <span class="k">import</span> <span class="n">find_intersections</span>
+<span class="kn">from</span> <span class="nn">tools</span> <span class="k">import</span> <span class="p">(</span><span class="n">_greater_or_close</span><span class="p">,</span> <span class="n">_less_or_close</span><span class="p">,</span> <span class="n">broadcast_indices</span><span class="p">,</span> <span class="n">find_intersections</span><span class="p">,</span>
+                    <span class="n">get_layer</span><span class="p">,</span> <span class="n">interp</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">metpy.units</span> <span class="k">import</span> <span class="n">units</span><span class="p">,</span><span class="n">concatenate</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<div class="viewcode-block" id="distance"><a class="viewcode-back" href="../tools.html#toolbox.distance">[docs]</a><span class="k">def</span> <span class="nf">distance</span><span class="p">(</span><span class="n">lat1</span><span class="p">,</span><span class="n">lon1</span><span class="p">,</span><span class="n">lat2</span><span class="p">,</span><span class="n">lon2</span><span class="p">):</span>
+	<span class="sa">r</span><span class="sd">&quot;&quot;&quot;Estimate the distance in kilometers between two points.</span>
+
+<span class="sd">	Given the latitude and longitude of two points in Earth (x1,y1), (x2,y2)</span>
+<span class="sd">	This function computes the distance between those two points using formulaes of spheric geometry.</span>
+
+
+<span class="sd">	*Parameters*</span>
+
+<span class="sd">	lat1 : `float`</span>
+<span class="sd">	    Latitude of starting point [radians]</span>
+<span class="sd">	lon1 : `float`</span>
+<span class="sd">	    Longitude of starting point [radians]</span>
+<span class="sd">	lat2 : `float`</span>
+<span class="sd">	    Latitude of final point [radians]</span>
+<span class="sd">	lon2 : `float`</span>
+<span class="sd">	    Longitude of final point [radians]</span>
+
+<span class="sd">	*Returns*</span>
+
+<span class="sd">	r : `float`</span>
+<span class="sd">	     The geometric distance between two points on the surface of a sphere</span>
+
+<span class="sd">	The radius *r* is given using, first, the</span>
+<span class="sd">	`Haversine formula &lt;https://en.wikipedia.org/wiki/Haversine_formula&gt;`_ and it was written to match the script from `Rosetta &lt;https://rosettacode.org/wiki/Haversine_formula#Python&gt;`_ to great extent.</span>
+
+<span class="sd">	.. math:: a = sin^2\bigg(\frac{\Delta \varphi}{2}\bigg) +cos \varphi _1 \cdot cos \varphi _2 \cdot sin^2\bigg(\frac{\Delta \lambda}{2}\bigg)</span>
+
+<span class="sd">	determined by:</span>
+
+<span class="sd">	* :math:`a` Great-circle distance between to points.</span>
+<span class="sd">	* :math:`\Delta \varphi=\varphi _2-\varphi _1` Latitude difference between two points.</span>
+<span class="sd">	* :math:`\varphi_1` Latitude of starting point [radians].</span>
+<span class="sd">	* :math:`\varphi_2` Latitude of final point [radians].</span>
+<span class="sd">	* :math:`\Delta \lambda=\lambda _2-\lambda _1` Longitude difference between two points.</span>
+
+<span class="sd">	To convert the great circle distance given by the Haversine formula in a sphere of radius :math:`R` (radius of the Earth) to a distance :math:`r`:</span>
+
+<span class="sd">	.. math:: r=R\cdot 2 arctan\bigg(\frac{\sqrt{a}}{\sqrt{1-a}}\bigg)</span>
+
+<span class="sd">	Using the previous mathematical treatment, you could use this functions as desribed below:</span>
+
+
+<span class="sd">	*Examples*</span>
+
+<span class="sd">	&gt;&gt;&gt; from toolbox import distance</span>
+<span class="sd">	&gt;&gt;&gt; from math import radians</span>
+<span class="sd">	&gt;&gt;&gt; print(distance(radians(45),radians(80),radians(59),radians(82)))</span>
+<span class="sd">	1563.051273807386</span>
+
+
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="c1"># approximate radius of earth in km</span>
+	<span class="n">R</span> <span class="o">=</span> <span class="mi">6373</span>
+
+	<span class="c1"># delta lambda y varphi</span>
+	<span class="n">dlon</span> <span class="o">=</span> <span class="n">lon2</span> <span class="o">-</span> <span class="n">lon1</span>
+	<span class="n">dlat</span> <span class="o">=</span> <span class="n">lat2</span> <span class="o">-</span> <span class="n">lat1</span>
+
+	<span class="c1"># greater circle distance</span>
+	<span class="n">a</span> <span class="o">=</span> <span class="n">sin</span><span class="p">(</span><span class="n">dlat</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">cos</span><span class="p">(</span><span class="n">lat1</span><span class="p">)</span> <span class="o">*</span> <span class="n">cos</span><span class="p">(</span><span class="n">lat2</span><span class="p">)</span> <span class="o">*</span> <span class="n">sin</span><span class="p">(</span><span class="n">dlon</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+
+	<span class="c1"># split operation to get radius</span>
+	<span class="n">factor</span><span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">atan2</span><span class="p">(</span><span class="n">sqrt</span><span class="p">(</span><span class="n">a</span><span class="p">),</span> <span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">a</span><span class="p">))</span>
+
+	<span class="c1"># distance is the radius of the Earth times the parameter c</span>
+	<span class="n">distance</span> <span class="o">=</span> <span class="n">R</span> <span class="o">*</span> <span class="n">factor</span>
+
+	<span class="c1"># Return output.</span>
+	<span class="k">return</span> <span class="n">distance</span></div>
+<span class="c1"># Get track function of storm and year.</span>
+<div class="viewcode-block" id="getrack"><a class="viewcode-back" href="../tools.html#toolbox.getrack">[docs]</a><span class="k">def</span> <span class="nf">getrack</span><span class="p">(</span><span class="n">storm</span><span class="p">,</span><span class="n">year</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Obtain the track of a storm specifying the year since storm names can be repeated. .</span>
+
+<span class="sd">    This function obtains and returns all track parameters, location, intensity and relative speed.</span>
+
+<span class="sd">    *Parameters*</span>
+
+<span class="sd">    storm : `string`</span>
+<span class="sd">        Name of storm.</span>
+<span class="sd">    year : `string`</span>
+<span class="sd">        Year of storm.</span>
+
+<span class="sd">    *Returns*</span>
+
+<span class="sd">    longitudes :`np.ndarray (type=np.float)`</span>
+<span class="sd">    latitudes:`np.ndarray(type=np.float)`</span>
+<span class="sd">    windspeeds:`np.ndarray(type=np.float)`</span>
+<span class="sd">    Intensity_label: `list`</span>
+<span class="sd">        List of Intensity Labels, e.g., (H) for Hurricane.</span>
+<span class="sd">    df.index:`pandas.DataFrame.Index`</span>
+<span class="sd">        List of dates that correspond to the dates and times of the previous arrays.</span>
+
+<span class="sd">    *Examples*</span>
+
+<span class="sd">    &gt;&gt;&gt; from toolbox import getrack</span>
+<span class="sd">    &gt;&gt;&gt; track=getrack(&#39;Isabel&#39;,&#39;2003&#39;)</span>
+
+
+<span class="sd">    &quot;&quot;&quot;</span></div>
+<div class="viewcode-block" id="clean1"><a class="viewcode-back" href="../tools.html#toolbox.clean1">[docs]</a><span class="k">def</span> <span class="nf">clean1</span><span class="p">(</span><span class="n">vec</span><span class="p">):</span>
+	<span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Clean values from arrays that are NANs but written as any of the following:</span>
+
+<span class="sd">	*9999.0,999.0,99.0,99999.0,-999.,-9999.,-99. *</span>
+
+<span class="sd">	This function simply replaces this values for Not a Number (NAN) values that Python can recognize.</span>
+
+<span class="sd">	*Parameters*</span>
+
+<span class="sd">	vec : `np.array`</span>
+<span class="sd">	    Array to clean</span>
+
+<span class="sd">	*Returns*</span>
+
+<span class="sd">	vec :`np.ndarray (type=np.float)`</span>
+
+<span class="sd">	*Examples*</span>
+
+<span class="sd">	&gt;&gt;&gt; from toolbox import clean1</span>
+<span class="sd">	&gt;&gt;&gt; newpressure=clean1(pressure)</span>
+
+
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="n">falseval</span><span class="o">=</span><span class="p">[</span><span class="mf">9999.0</span><span class="p">,</span><span class="mf">999.0</span><span class="p">,</span><span class="mf">99.0</span><span class="p">,</span><span class="mf">99999.0</span><span class="p">,</span><span class="o">-</span><span class="mf">999.</span><span class="p">,</span><span class="o">-</span><span class="mf">9999.</span><span class="p">,</span><span class="o">-</span><span class="mf">99.</span><span class="p">]</span>
+	<span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">vec</span><span class="p">):</span>
+		<span class="k">if</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">falseval</span><span class="p">:</span>
+			<span class="n">vec</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+	<span class="k">return</span> <span class="n">vec</span></div>
+<div class="viewcode-block" id="clean2"><a class="viewcode-back" href="../tools.html#toolbox.clean2">[docs]</a><span class="k">def</span> <span class="nf">clean2</span><span class="p">(</span><span class="n">vec</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Clean values from arrays that are significantly different between measurements.</span>
+
+
+<span class="sd">    This function simply replaces this values for Not a Number (NAN) values that Python can recognize as</span>
+<span class="sd">    sudden steps in the profile.</span>
+
+<span class="sd">    *Parameters*</span>
+
+<span class="sd">    vec : `np.array`</span>
+<span class="sd">        Array to clean</span>
+
+<span class="sd">    *Returns*</span>
+
+<span class="sd">    vec :`np.ndarray (type=np.float)`</span>
+
+<span class="sd">    *Examples*</span>
+
+<span class="sd">    &gt;&gt;&gt; from toolbox import clean2</span>
+<span class="sd">    &gt;&gt;&gt; newpressure=clean2(pressure)</span>
+
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">vec</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="ow">and</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">vec</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="ow">not</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">vec</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span> <span class="ow">and</span> <span class="ow">not</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">vec</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">])):</span>
+                            <span class="n">vec</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="p">(</span><span class="n">vec</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="n">vec</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span><span class="o">/</span><span class="mf">2.0</span>
+                    <span class="k">elif</span> <span class="ow">not</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">vec</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span> <span class="ow">and</span> <span class="n">i</span><span class="o">&gt;</span><span class="mi">4</span><span class="p">:</span>
+                            <span class="n">vec</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">vec</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">4</span><span class="p">:</span><span class="n">i</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">vec</span></div>
+<div class="viewcode-block" id="cleanu"><a class="viewcode-back" href="../tools.html#toolbox.cleanu">[docs]</a><span class="k">def</span> <span class="nf">cleanu</span><span class="p">(</span><span class="n">vec</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Clean values from wind speed arrays that are significantly different from previous time-steps.</span>
+
+<span class="sd">    This function simply replaces with Not a Number (NAN) values that are abnormally different than the mean</span>
+<span class="sd">    distribution of the vector. This avoids extreme values in the vector.</span>
+
+<span class="sd">    *Parameters*</span>
+
+<span class="sd">    vec : `np.array`</span>
+<span class="sd">        Array to clean</span>
+
+<span class="sd">    *Returns*</span>
+
+<span class="sd">    vec :`np.ndarray (type=np.float)`</span>
+
+<span class="sd">    *Examples*</span>
+
+<span class="sd">    &gt;&gt;&gt; from toolbox import clean1</span>
+<span class="sd">    &gt;&gt;&gt; newpressure=cleanu(pressure)</span>
+
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">vec</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">vec</span><span class="p">)</span><span class="o">+</span><span class="mi">3</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">vec</span><span class="p">)):</span>
+                    <span class="n">vec</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">v</span><span class="o">-</span><span class="n">vec</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="mf">1.1</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">vec</span><span class="p">)):</span>
+                    <span class="n">vec</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+    <span class="n">dif</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">vec</span><span class="p">)</span>
+    <span class="n">ii</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">dif</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ii</span><span class="p">:</span>
+            <span class="n">vec</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+    <span class="k">return</span> <span class="n">vec</span></div>
+
+<div class="viewcode-block" id="dp_dr"><a class="viewcode-back" href="../tools.html#toolbox.dp_dr">[docs]</a><span class="k">def</span> <span class="nf">dp_dr</span><span class="p">(</span><span class="n">pressure</span><span class="p">,</span> <span class="n">radius</span><span class="p">):</span>
+	<span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate the pressure gradient on the radius coordinate.</span>
+
+<span class="sd">	This function estimates the gradient of the function :math:`p` along the radial coordinate, *i.e.*:</span>
+
+<span class="sd">	.. math:: \frac{\partial p}{\partial r}\sim \frac{\Delta p}{\Delta r}=\frac{P_2-P_1}{r_2-r_1}</span>
+
+<span class="sd">	*Parameters*</span>
+
+<span class="sd">	pressure : `np.ndarray (type=np.float)`</span>
+<span class="sd">	    The total interpolated atmospheric pressure in milibars.</span>
+<span class="sd">	radius : `np.ndarray (type=np.float)`</span>
+<span class="sd">	    Radius distance to the center of the storm in [km].</span>
+
+<span class="sd">	*Returns*</span>
+
+<span class="sd">	`np.ndarray (type=np.float)`</span>
+
+
+<span class="sd">	*Examples*</span>
+
+<span class="sd">	&gt;&gt;&gt; from toolbox import dp_dr</span>
+<span class="sd">	&gt;&gt;&gt; dpdr=dp_dr(pressure,r)))</span>
+
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="c1">#Convert radius to [m]</span>
+	<span class="n">radius</span><span class="o">=</span><span class="n">radius</span><span class="o">*</span><span class="mf">1000.</span>
+	<span class="c1"># Convert pressure to Pascals from hPa</span>
+	<span class="n">pressure</span><span class="o">=</span><span class="n">pressure</span><span class="o">*</span><span class="mi">100</span>
+
+	<span class="c1"># Empty lists to fill: derivate and new radius vector.</span>
+	<span class="n">dpdr</span><span class="o">=</span><span class="p">[]</span>
+	<span class="n">newr</span><span class="o">=</span><span class="p">[]</span>
+
+
+		<span class="c1">#  get first_derivative loop</span>
+	<span class="k">for</span> <span class="n">index</span><span class="p">,</span><span class="n">p1</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pressure</span><span class="p">):</span>
+
+		<span class="c1"># Estimate pressure difference, p2-p1</span>
+		<span class="n">deltap</span><span class="o">=</span><span class="n">pressure</span><span class="p">[</span><span class="n">index</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">p1</span>
+		<span class="c1"># r1=radius[index] and r2[index+1]</span>
+		<span class="n">deltar</span><span class="o">=</span><span class="n">radius</span><span class="p">[</span><span class="n">index</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">radius</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+		<span class="c1"># dp_dr according to the equation above</span>
+		<span class="n">dpdr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">deltap</span><span class="o">/</span><span class="n">deltar</span><span class="p">)</span>
+
+		<span class="c1"># Get mean radius where derivative was estimated</span>
+		<span class="n">newr</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">radius</span><span class="p">[</span><span class="n">index</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="n">radius</span><span class="p">[</span><span class="n">index</span><span class="p">])</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span>
+
+		<span class="c1"># Break condition of final value</span>
+		<span class="k">if</span> <span class="n">index</span><span class="o">+</span><span class="mi">1</span><span class="o">==</span><span class="nb">len</span><span class="p">(</span><span class="n">pressure</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+			<span class="k">break</span>
+	<span class="c1"># Return array and new radius vector</span>
+	<span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">dpdr</span><span class="p">),</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">newr</span><span class="p">)</span></div>
+<div class="viewcode-block" id="parcel_profile"><a class="viewcode-back" href="../tools.html#toolbox.parcel_profile">[docs]</a><span class="k">def</span> <span class="nf">parcel_profile</span><span class="p">(</span><span class="n">pressure</span><span class="p">,</span> <span class="n">temperature</span><span class="p">,</span> <span class="n">dewpt</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate the profile a parcel takes through the atmosphere.</span>
+
+<span class="sd">    The parcel starts at `temperature`, and `dewpt`, lifted up</span>
+<span class="sd">    dry adiabatically to the LCL, and then moist adiabatically from there.</span>
+<span class="sd">    `pressure` specifies the pressure levels for the profile.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    pressure : `pint.Quantity`</span>
+<span class="sd">        The atmospheric pressure level(s) of interest. The first entry should be the starting</span>
+<span class="sd">        point pressure.</span>
+<span class="sd">    temperature : `pint.Quantity`</span>
+<span class="sd">        The starting temperature</span>
+<span class="sd">    dewpt : `pint.Quantity`</span>
+<span class="sd">        The starting dew point</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    `pint.Quantity`</span>
+<span class="sd">        The parcel temperatures at the specified pressure levels.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    lcl, moist_lapse, dry_lapse</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Find the LCL</span>
+    <span class="n">lcl_pressure</span> <span class="o">=</span> <span class="n">lcl</span><span class="p">(</span><span class="n">pressure</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">temperature</span><span class="p">,</span> <span class="n">dewpt</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">pressure</span><span class="o">.</span><span class="n">units</span><span class="p">)</span>
+
+    <span class="c1"># Find the dry adiabatic profile, *including* the LCL. We need &gt;= the LCL in case the</span>
+    <span class="c1"># LCL is included in the levels. It&#39;s slightly redundant in that case, but simplifies</span>
+    <span class="c1"># the logic for removing it later.</span>
+    <span class="n">press_lower</span> <span class="o">=</span> <span class="n">concatenate</span><span class="p">((</span><span class="n">pressure</span><span class="p">[</span><span class="n">pressure</span> <span class="o">&gt;=</span> <span class="n">lcl_pressure</span><span class="p">],</span> <span class="n">lcl_pressure</span><span class="p">))</span>
+    <span class="n">t1</span> <span class="o">=</span> <span class="n">dry_lapse</span><span class="p">(</span><span class="n">press_lower</span><span class="p">,</span> <span class="n">temperature</span><span class="p">)</span>
+
+    <span class="c1"># Find moist pseudo-adiabatic profile starting at the LCL</span>
+    <span class="n">press_upper</span> <span class="o">=</span> <span class="n">concatenate</span><span class="p">((</span><span class="n">lcl_pressure</span><span class="p">,</span> <span class="n">pressure</span><span class="p">[</span><span class="n">pressure</span> <span class="o">&lt;</span> <span class="n">lcl_pressure</span><span class="p">]))</span>
+    <span class="n">t2</span> <span class="o">=</span> <span class="n">moist_lapse</span><span class="p">(</span><span class="n">press_upper</span><span class="p">,</span> <span class="n">t1</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">t1</span><span class="o">.</span><span class="n">units</span><span class="p">)</span>
+
+    <span class="c1"># Return LCL *without* the LCL point</span>
+    <span class="k">return</span> <span class="n">concatenate</span><span class="p">((</span><span class="n">t1</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">t2</span><span class="p">[</span><span class="mi">1</span><span class="p">:]))</span></div>
+<div class="viewcode-block" id="_find_append_zero_crossings"><a class="viewcode-back" href="../tools.html#toolbox._find_append_zero_crossings">[docs]</a><span class="k">def</span> <span class="nf">_find_append_zero_crossings</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Find and interpolate zero crossings.</span>
+
+<span class="sd">    Estimate the zero crossings of an x,y series and add estimated crossings to series,</span>
+<span class="sd">    returning a sorted array with no duplicate values.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x : `pint.Quantity`</span>
+<span class="sd">        x values of data</span>
+<span class="sd">    y : `pint.Quantity`</span>
+<span class="sd">        y values of data</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    x : `pint.Quantity`</span>
+<span class="sd">        x values of data</span>
+<span class="sd">    y : `pint.Quantity`</span>
+<span class="sd">        y values of data</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Find and append crossings to the data</span>
+    <span class="n">crossings</span> <span class="o">=</span> <span class="n">find_intersections</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">*</span> <span class="n">y</span><span class="o">.</span><span class="n">units</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">crossings</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">concatenate</span><span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="n">crossings</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">concatenate</span><span class="p">((</span><span class="n">y</span><span class="p">,</span> <span class="n">crossings</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+
+    <span class="c1"># Resort so that data are in order</span>
+    <span class="n">sort_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="n">sort_idx</span><span class="p">]</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="n">sort_idx</span><span class="p">]</span>
+
+    <span class="c1"># Remove duplicate data points if there are any</span>
+    <span class="n">keep_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ediff1d</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">to_end</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="n">keep_idx</span><span class="p">]</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="n">keep_idx</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span></div>
+
+
+<div class="viewcode-block" id="cape_cin"><a class="viewcode-back" href="../tools.html#toolbox.cape_cin">[docs]</a><span class="k">def</span> <span class="nf">cape_cin</span><span class="p">(</span><span class="n">pressure</span><span class="p">,</span> <span class="n">temperature</span><span class="p">,</span> <span class="n">dewpt</span><span class="p">,</span> <span class="n">parcel_profile</span><span class="p">,</span><span class="n">dz</span><span class="p">,</span><span class="n">temp</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate CAPE and CIN.</span>
+<span class="sd">    This script is originally from Metpy module but it was not avaialble in Python 3.6.3 Anaconda version. JLGF.</span>
+
+
+<span class="sd">    Calculate the convective available potential energy (CAPE) and convective inhibition (CIN)</span>
+<span class="sd">    of a given upper air profile and parcel path. CIN is integrated between the surface and</span>
+<span class="sd">    LFC, CAPE is integrated between the LFC and EL (or top of sounding). Intersection points of</span>
+<span class="sd">    the measured temperature profile and parcel profile are linearly interpolated.</span>
+
+
+<span class="sd">    Especifically this script has been adapted from :cite:`montearl` and :cite:`molinari2010` which use a very particular function for CAPE.</span>
+<span class="sd">    CAPE is not trivially computed from dropsonde measurements and several cautions are extended:</span>
+
+<span class="sd">    1. Vertical profiles usually do not reach the equilibrium level (EL) but instead are cut-off at 8-9 km.</span>
+<span class="sd">    2. Typical CAPE formula estimates the area of the difference between parcel and environmental profiles, however, this method uses a more robust approach :cite:`bogner2000`.</span>
+<span class="sd">    3. Several corrections would need to be in place for this script to be comparable to other studies (see above). It is then a simple approximation and by no means a complete and thorough algorithm.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    pressure : `pint.Quantity`</span>
+<span class="sd">        The atmospheric pressure level(s) of interest. The first entry should be the starting</span>
+<span class="sd">        point pressure.</span>
+<span class="sd">    temperature : `pint.Quantity`</span>
+<span class="sd">        The atmospheric temperature corresponding to pressure.</span>
+<span class="sd">    dewpt : `pint.Quantity`</span>
+<span class="sd">        The atmospheric dew point corresponding to pressure.</span>
+<span class="sd">    parcel_profile : `pint.Quantity`</span>
+<span class="sd">        The temperature profile of the parcel</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    `pint.Quantity`</span>
+<span class="sd">        Convective available potential energy (CAPE).</span>
+<span class="sd">    `pint.Quantity`</span>
+<span class="sd">        Convective inhibition (CIN).</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Formula adopted from :cite:`montearl`</span>
+
+<span class="sd">    .. math:: \text{CAPE} = \int_{LFC}^{EL} g\frac{(T_{v} - T_{ve})}{\overline{T_{ve}}} dz</span>
+
+<span class="sd">    .. math:: \text{CIN} = \int_{SFC}^{LFC} g\frac{(T_{v} - T_{ve})}{\overline{T_{ve}}} dz</span>
+
+
+<span class="sd">    * :math:`CAPE` Convective available potential energy</span>
+<span class="sd">    * :math:`CIN` Convective inhibition</span>
+<span class="sd">    * :math:`LFC` Pressure of the level of free convection</span>
+<span class="sd">    * :math:`EL` Pressure of the equilibrium level</span>
+<span class="sd">    * :math:`SFC` Level of the surface or beginning of parcel path</span>
+<span class="sd">    * :math:`g` Gravitational acceleration</span>
+<span class="sd">    * :math:`T_{v}` Parcel potential temperature.</span>
+<span class="sd">    * :math:`T_{ve}` Environmental potential temperature.</span>
+<span class="sd">    * :math:`\overline{T_{ve}}` Mean environmental potential temperature.</span>
+<span class="sd">    * :math:`dz` Height array differential.</span>
+
+<span class="sd">    See Also</span>
+
+<span class="sd">    :meth:`toolbox._find_append_zero_crossings`, :meth:`toolbox.parcel_profile`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Calculate LFC limit of integration</span>
+    <span class="n">lfc_pressure</span> <span class="o">=</span> <span class="n">mpcalc</span><span class="o">.</span><span class="n">lfc</span><span class="p">(</span><span class="n">pressure</span><span class="p">,</span> <span class="n">temperature</span><span class="p">,</span> <span class="n">dewpt</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">g</span><span class="o">=</span><span class="mf">9.806</span><span class="o">*</span><span class="n">units</span><span class="o">.</span><span class="n">m</span> <span class="o">/</span><span class="n">units</span><span class="o">.</span><span class="n">s</span><span class="o">**</span><span class="mi">2</span>
+
+
+
+    <span class="c1"># If there is no LFC, no need to proceed.</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">lfc_pressure</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mi">0</span> <span class="o">*</span> <span class="n">units</span><span class="p">(</span><span class="s1">&#39;J/kg&#39;</span><span class="p">),</span> <span class="mi">0</span> <span class="o">*</span> <span class="n">units</span><span class="p">(</span><span class="s1">&#39;J/kg&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">lfc_pressure</span> <span class="o">=</span> <span class="n">lfc_pressure</span><span class="o">.</span><span class="n">magnitude</span>
+
+    <span class="c1"># Calculate the EL limit of integration</span>
+    <span class="n">el_pressure</span> <span class="o">=</span> <span class="n">mpcalc</span><span class="o">.</span><span class="n">el</span><span class="p">(</span><span class="n">pressure</span><span class="p">,</span> <span class="n">temperature</span><span class="p">,</span> <span class="n">dewpt</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="c1"># No EL and we use the top reading of the sounding.</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">el_pressure</span><span class="p">):</span>
+        <span class="n">el_pressure</span> <span class="o">=</span> <span class="n">pressure</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">magnitude</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">el_pressure</span> <span class="o">=</span> <span class="n">el_pressure</span><span class="o">.</span><span class="n">magnitude</span>
+
+    <span class="c1"># Difference between the parcel path and measured temperature profiles</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="n">parcel_profile</span> <span class="o">-</span> <span class="n">temperature</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">units</span><span class="o">.</span><span class="n">degK</span><span class="p">)</span>
+    <span class="n">dzx</span><span class="p">,</span><span class="n">yz</span><span class="o">=</span><span class="n">_find_append_zero_crossings</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">dz</span><span class="p">),</span><span class="n">y</span><span class="p">)</span>
+    <span class="c1"># Estimate zero crossings</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">_find_append_zero_crossings</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">pressure</span><span class="p">),</span> <span class="n">y</span><span class="p">)</span>
+    <span class="n">x</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">lfc_height</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">dzx</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">lfc_pressure</span><span class="p">,</span><span class="n">atol</span><span class="o">=</span><span class="mf">1.5</span><span class="p">)])</span>
+    <span class="n">el_height</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">dzx</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">el_pressure</span><span class="p">,</span><span class="n">atol</span><span class="o">=</span><span class="mf">1.5</span><span class="p">)])</span>
+    <span class="n">Tv_env</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">temperature</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">dz</span><span class="o">&gt;</span><span class="n">lfc_height</span><span class="p">)</span><span class="o">&amp;</span><span class="p">(</span><span class="n">dz</span><span class="o">&lt;</span><span class="n">el_height</span><span class="p">))])</span><span class="o">*</span><span class="n">units</span><span class="o">.</span><span class="n">degK</span>
+    <span class="c1"># CAPE</span>
+    <span class="c1"># Only use data between the LFC and EL for calculation</span>
+    <span class="n">p_mask</span> <span class="o">=</span> <span class="n">_less_or_close</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">lfc_pressure</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">_greater_or_close</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">el_pressure</span><span class="p">)</span>
+    <span class="n">z_mask</span> <span class="o">=</span> <span class="n">_less_or_close</span><span class="p">(</span><span class="n">dzx</span><span class="p">,</span><span class="n">lfc_height</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">_greater_or_close</span><span class="p">(</span><span class="n">dzx</span><span class="p">,</span><span class="n">el_height</span><span class="p">)</span>
+    <span class="n">x_clipped</span> <span class="o">=</span> <span class="n">dzx</span><span class="p">[</span><span class="n">p_mask</span><span class="p">]</span>
+    <span class="n">y_clipped</span> <span class="o">=</span> <span class="n">yz</span><span class="p">[</span><span class="n">p_mask</span><span class="p">]</span>
+    <span class="n">cape</span> <span class="o">=</span> <span class="p">((</span><span class="n">g</span><span class="o">/</span><span class="n">Tv_env</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">trapz</span><span class="p">(</span><span class="n">y_clipped</span><span class="p">,</span> <span class="n">x_clipped</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">dz</span><span class="p">))</span> <span class="o">*</span> <span class="n">units</span><span class="o">.</span><span class="n">degK</span><span class="o">*</span><span class="n">units</span><span class="o">.</span><span class="n">m</span><span class="p">))</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">units</span><span class="p">(</span><span class="s1">&#39;J/kg&#39;</span><span class="p">))</span>
+    <span class="c1"># CIN</span>
+    <span class="c1"># Only use data between the surface and LFC for calculation</span>
+    <span class="n">p_mask</span> <span class="o">=</span> <span class="n">_greater_or_close</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">lfc_pressure</span><span class="p">)</span>
+    <span class="n">x_clipped</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="n">p_mask</span><span class="p">]</span>
+    <span class="n">y_clipped</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="n">p_mask</span><span class="p">]</span>
+    <span class="n">cin</span> <span class="o">=</span> <span class="p">((</span><span class="n">g</span><span class="o">/</span><span class="n">Tv_env</span><span class="p">)</span><span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">trapz</span><span class="p">(</span><span class="n">y_clipped</span><span class="p">,</span><span class="n">x_clipped</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">dz</span><span class="p">))</span><span class="o">*</span> <span class="n">units</span><span class="o">.</span><span class="n">degK</span><span class="o">*</span><span class="n">units</span><span class="o">.</span><span class="n">m</span><span class="p">))</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">units</span><span class="p">(</span><span class="s1">&#39;J/kg&#39;</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">cape</span><span class="p">,</span> <span class="n">cin</span></div>
+<div class="viewcode-block" id="getgradwind"><a class="viewcode-back" href="../tools.html#toolbox.getgradwind">[docs]</a><span class="k">def</span> <span class="nf">getgradwind</span><span class="p">(</span><span class="n">presgrad</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span><span class="n">coriolis</span><span class="p">):</span>
+	<span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate the gradient wind in a particular point.</span>
+
+<span class="sd">	Gradient wind balance is given by :cite:`emanuel1986,bell2005`</span>
+
+<span class="sd">	.. math:: \frac{1}{\rho_0}\frac{\partial p}{\partial r}=\frac{V_g^2}{r}+fV_g</span>
+
+<span class="sd">	where :math:`\rho_0` is a constant density, :math:`\frac{\partial p}{\partial r}` is the</span>
+<span class="sd">	radial gradient of the pressure field, :math:`V_g` is the gradient wind and :math:`f` is the coriolis parameter.</span>
+
+<span class="sd">	which is a polynomial of degree *n=2* and needs to be solved using</span>
+<span class="sd">	`np.roots &lt;https://docs.scipy.org/doc/numpy/reference/generated/numpy.roots.html&gt;`_.</span>
+
+<span class="sd">	*Parameters*</span>
+
+<span class="sd">	presgrad : `np.float (array)`</span>
+<span class="sd">	    Radial gradient of pressure. See also :ref:`dp_dr`</span>
+<span class="sd">	radius : `np.float (array)`</span>
+<span class="sd">	    Radius distance to the center of the storm in [km].</span>
+
+
+<span class="sd">	*Returns*</span>
+
+<span class="sd">	`np.ndarray (type=np.float)`</span>
+<span class="sd">		Gradient wind vector</span>
+
+
+<span class="sd">	*Examples*</span>
+
+<span class="sd">	&gt;&gt;&gt; from toolbox import dp_dr</span>
+<span class="sd">	&gt;&gt;&gt; dpdr=getgradwind(dpdr,r0,1*(10**(-4))))</span>
+
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="c1"># Allocate variables</span>
+<span class="c1">#	Density approximation</span>
+	<span class="n">density</span><span class="o">=</span><span class="mf">1.11164</span>
+<span class="c1"># coriolis</span>
+	<span class="n">f</span><span class="o">=</span><span class="n">coriolis</span>
+
+	<span class="c1"># empty list to fill with vg values</span>
+	<span class="n">gradwind</span><span class="o">=</span><span class="p">[]</span>
+
+	<span class="c1"># np. roots requires a,b,c coefficients, see docs for np.roots.</span>
+	<span class="c1"># ax^2+bx+c=0</span>
+
+	<span class="k">for</span> <span class="n">index</span><span class="p">,</span><span class="n">r0</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">radius</span><span class="p">):</span>
+		<span class="c1"># c</span>
+		<span class="n">c</span><span class="o">=-</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">density</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">presgrad</span><span class="p">[</span><span class="n">index</span><span class="p">])</span>
+		<span class="c1"># b</span>
+		<span class="n">b</span><span class="o">=</span><span class="n">f</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+		<span class="c1"># a</span>
+		<span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="o">/</span><span class="n">r0</span>
+
+		<span class="c1"># gradientwind</span>
+		<span class="n">r</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">roots</span><span class="p">([</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">])</span>
+		<span class="n">vg</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+		<span class="n">gradwind</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">vg</span><span class="p">)</span>
+
+	<span class="c1"># Return array and new radius vector</span>
+	<span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">gradwind</span><span class="p">)</span></div>
+<div class="viewcode-block" id="potential_temperature"><a class="viewcode-back" href="../tools.html#toolbox.potential_temperature">[docs]</a><span class="k">def</span> <span class="nf">potential_temperature</span><span class="p">(</span><span class="n">pressure</span><span class="p">,</span> <span class="n">temperature</span><span class="p">):</span>
+	<span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate the potential temperature.</span>
+
+<span class="sd">	This function originated from the Metpy Module. It was modified by JLGF for the dropsondes.</span>
+<span class="sd">	Uses the Poisson equation to calculation the potential temperature</span>
+<span class="sd">	given `pressure` and `temperature`.</span>
+
+<span class="sd">	*Parameters*</span>
+
+<span class="sd">	pressure : `pint.Quantity`</span>
+<span class="sd">	    The total atmospheric pressure in milibars.</span>
+<span class="sd">	temperature : `pint.Quantity`</span>
+<span class="sd">	    The temperature in Kelvin.</span>
+
+<span class="sd">	*Returns*</span>
+
+<span class="sd">	`pint.Quantity`</span>
+<span class="sd">	    The potential temperature corresponding to the temperature and</span>
+<span class="sd">	    pressure.</span>
+
+<span class="sd">	Formula:</span>
+
+<span class="sd">	.. math:: \Theta = T (P_0 / P)^\kappa</span>
+
+<span class="sd">	*Examples*</span>
+
+<span class="sd">	&gt;&gt;&gt; from metpy.units import units</span>
+<span class="sd">	&gt;&gt;&gt; from toolbox import potential_temperature</span>
+<span class="sd">	&gt;&gt;&gt; print(potential_temperature(800. * units.mbar, 273. * units.kelvin))</span>
+<span class="sd">	&lt;Quantity(290.96653180346203, &#39;kelvin&#39;)&gt;</span>
+
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="c1">#Reference pressure</span>
+	<span class="n">P0</span><span class="o">=</span><span class="mi">1000</span><span class="o">*</span><span class="n">units</span><span class="o">.</span><span class="n">mbar</span>
+	<span class="c1">#  specific heat at constant pressure for dry air, in J / kg / K</span>
+	<span class="n">cp</span> <span class="o">=</span> <span class="mf">1004.</span>
+	<span class="c1">#  gas constant for dry air, in J / kg / K</span>
+	<span class="n">Rd</span> <span class="o">=</span> <span class="mf">287.</span>
+	<span class="c1"># Kappa Rd /Cp</span>
+	<span class="n">kappa</span> <span class="o">=</span> <span class="n">Rd</span> <span class="o">/</span> <span class="n">cp</span>
+	<span class="k">return</span> <span class="n">temperature</span> <span class="o">*</span> <span class="p">(</span><span class="n">P0</span> <span class="o">/</span> <span class="n">pressure</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s1">&#39;dimensionless&#39;</span><span class="p">)</span><span class="o">**</span><span class="n">kappa</span></div>
+<div class="viewcode-block" id="findproperties"><a class="viewcode-back" href="../tools.html#toolbox.findproperties">[docs]</a><span class="k">def</span> <span class="nf">findproperties</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="n">database</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Function to read-in and find the properties of a file.</span>
+
+<span class="sd">	*Parameters*</span>
+
+<span class="sd">	filename: `string`</span>
+<span class="sd">	    Name of file (full path).</span>
+<span class="sd">	database : `dictionary`</span>
+<span class="sd">	    The temperature in Kelvin.</span>
+
+<span class="sd">	**Properties**</span>
+<span class="sd">		1. Date/Time of sounding.</span>
+<span class="sd">		2. Location of initial sounding.</span>
+<span class="sd">		3. Name of sounding.</span>
+
+<span class="sd">	**Returns**</span>
+
+<span class="sd">	diccionario:`dictionary`</span>
+
+<span class="sd">	Notice the variable-name in spanish. Given the similarity of the word with the english version and the fact that</span>
+<span class="sd">	`dictionary &lt;https://docs.python.org/2/tutorial/datastructures.html&gt;`_ is a reserved word in python.</span>
+
+<span class="sd">	*See also*</span>
+
+<span class="sd">	:meth:`getrack`</span>
+
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="c1"># Determine type of file</span>
+	<span class="k">if</span> <span class="n">database</span><span class="o">==</span><span class="s1">&#39;avp&#39;</span><span class="p">:</span>
+		<span class="c1"># Determine where our variables of interest are in this particular file.</span>
+		<span class="n">indexes</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">17</span><span class="p">,</span><span class="o">-</span><span class="mi">6</span><span class="p">,</span><span class="o">-</span><span class="mi">15</span><span class="p">]</span>
+		<span class="c1"># Determine datetime format according to type of sounding.</span>
+		<span class="n">formato</span><span class="o">=</span><span class="s1">&#39;%Y/%m/</span><span class="si">%d</span><span class="s1">, %H:%M:%S.</span><span class="si">%f</span><span class="se">\n</span><span class="s1">&#39;</span>
+	<span class="c1"># Same for radazm type of file.</span>
+	<span class="k">elif</span> <span class="n">database</span><span class="o">==</span><span class="s1">&#39;radazm&#39;</span><span class="p">:</span>
+		<span class="n">indexes</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">]</span>
+		<span class="n">formato</span><span class="o">=</span><span class="s1">&#39;%Y, %m, </span><span class="si">%d</span><span class="s1">, %H:%M:%S &#39;</span>
+
+	<span class="c1"># Open -read and close file to save memory.</span>
+	<span class="n">f</span><span class="o">=</span><span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
+	<span class="n">lineas</span><span class="o">=</span><span class="n">f</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+	<span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+	<span class="c1"># Create dictionary and define their keys.</span>
+	<span class="n">diccionario</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;Sounding name&#39;</span><span class="p">:</span><span class="s1">&#39; &#39;</span><span class="p">,</span><span class="s1">&#39;lon,lat,alt&#39;</span><span class="p">:</span><span class="s1">&#39; &#39;</span><span class="p">,</span><span class="s1">&#39;Launch Time&#39;</span><span class="p">:</span><span class="s1">&#39; &#39;</span><span class="p">}</span>
+
+	<span class="c1"># Select lines (l) of the name of sounding (lname), location (location) and time (ltime).</span>
+	<span class="n">lname</span><span class="o">=</span><span class="n">lineas</span><span class="p">[</span><span class="n">indexes</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)</span>
+	<span class="n">location</span><span class="o">=</span><span class="n">lineas</span><span class="p">[</span><span class="n">indexes</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)</span>
+	<span class="n">ltime</span><span class="o">=</span><span class="n">lineas</span><span class="p">[</span><span class="n">indexes</span><span class="p">[</span><span class="mi">2</span><span class="p">]]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;):&#39;</span><span class="p">)</span>
+	<span class="c1"># Possible print for user</span>
+	<span class="c1">#print(lname,location,ltime)</span>
+
+	<span class="c1"># Allocate sounding name in dictionary.</span>
+	<span class="n">diccionario</span><span class="p">[</span><span class="s1">&#39;Sounding name&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">lname</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+	<span class="c1">#Split line of location to get only relevant info.</span>
+	<span class="n">location</span><span class="o">=</span><span class="n">location</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+	<span class="c1"># Allocate location of drop in dictionary.</span>
+	<span class="n">diccionario</span><span class="p">[</span><span class="s1">&#39;lon,lat,alt&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">location</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+
+	<span class="c1"># Allocate launch time in dictionary.</span>
+	<span class="n">diccionario</span><span class="p">[</span><span class="s1">&#39;Launch Time&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">ltime</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+	<span class="c1"># Adjust launch time to get only the string of launch time. Initially, diccionario[&#39;Launch Time&#39;] has a lot of white-space.</span>
+	<span class="n">clear_white</span><span class="o">=</span><span class="n">diccionario</span><span class="p">[</span><span class="s1">&#39;Launch Time&#39;</span><span class="p">]</span>
+	<span class="c1"># while loop to eliminate white=space &#39; &#39;</span>
+	<span class="k">while</span> <span class="n">clear_white</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">==</span><span class="s1">&#39; &#39;</span><span class="p">:</span>
+		<span class="n">clear_white</span><span class="o">=</span><span class="n">clear_white</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+	<span class="c1"># Change Launch time to datetime object.</span>
+	<span class="n">diccionario</span><span class="p">[</span><span class="s1">&#39;Launch Time&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">clear_white</span><span class="p">,</span><span class="n">formato</span><span class="p">)</span>
+
+
+	<span class="c1"># Similar routine to clean sounding Name.</span>
+	<span class="n">clear_white</span><span class="o">=</span><span class="n">diccionario</span><span class="p">[</span><span class="s1">&#39;Sounding name&#39;</span><span class="p">]</span>
+
+	<span class="k">while</span> <span class="n">clear_white</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">==</span><span class="s1">&#39; &#39;</span><span class="p">:</span>
+		<span class="n">clear_white</span><span class="o">=</span><span class="n">clear_white</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+	<span class="n">diccionario</span><span class="p">[</span><span class="s1">&#39;Sounding name&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">clear_white</span>
+
+	<span class="c1"># Return styled-dictionary.</span>
+	<span class="k">return</span> <span class="n">diccionario</span></div>
+
+<div class="viewcode-block" id="timeconversion"><a class="viewcode-back" href="../tools.html#toolbox.timeconversion">[docs]</a><span class="k">def</span> <span class="nf">timeconversion</span><span class="p">(</span><span class="n">hhmmss</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Function that converts a time string to extract hours minutes and seconds from a string.</span>
+<span class="sd">	Specific for AVAPS dropsondes.</span>
+
+<span class="sd">	*Parameters*</span>
+
+<span class="sd">	hhmmss: `string`</span>
+<span class="sd">	    String containing hours (hh), minutes (mm) and seconds (ss)</span>
+
+<span class="sd">	**Properties**</span>
+<span class="sd">		1. Date/Time of sounding.</span>
+<span class="sd">		2. Location of initial sounding.</span>
+<span class="sd">		3. Name of sounding.</span>
+
+<span class="sd">	**Returns**</span>
+
+<span class="sd">	hours:`int`</span>
+<span class="sd">	seconds:`int`</span>
+<span class="sd">	minutes:`int`</span>
+
+<span class="sd">	The rationale behind this script is that most scripts work with dates and times oriented to datetime objects.</span>
+<span class="sd">	In this case, this particular string poses difficulties to process and as such, we extract the integers of the time.</span>
+
+<span class="sd">	*See also*</span>
+
+<span class="sd">	:meth:`findproperties`</span>
+
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="c1"># Create empty numpy arrays to be filled in processing loop.</span>
+	<span class="n">hours</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">hhmmss</span><span class="p">))</span>
+	<span class="n">minutes</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">hhmmss</span><span class="p">))</span>
+	<span class="n">seconds</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">hhmmss</span><span class="p">))</span>
+
+	<span class="c1">#Processing loop iterating over all values in hhmmss in an enumerated way.</span>
+	<span class="c1"># Index is an integer index=0,...n. and string is the value in the array.</span>
+	<span class="k">for</span> <span class="n">index</span><span class="p">,</span><span class="n">string</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">hhmmss</span><span class="p">):</span>
+		<span class="c1">#Obtainining first value of split string.</span>
+		<span class="n">string</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">string</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+		<span class="c1">#Condition to see if hour is less than 10, then add a zero to read in a universal format.</span>
+		<span class="c1"># Condition is based on length of the string, for instance 12545 corresponds to hour 1, minute 25 and 45 seconds,</span>
+		<span class="c1"># whereas 123432 has length 6, and hour is 12.</span>
+		<span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">string</span><span class="p">)</span><span class="o">&lt;=</span><span class="mi">5</span><span class="p">:</span>
+			<span class="n">string</span><span class="o">=</span><span class="s1">&#39;0&#39;</span><span class="o">+</span><span class="n">string</span>
+
+		<span class="c1"># Allocate values in string to hours, minutes and seconds.</span>
+		<span class="n">hours</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">string</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">])</span>
+		<span class="n">minutes</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">string</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">4</span><span class="p">])</span>
+		<span class="n">seconds</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">string</span><span class="p">[</span><span class="mi">4</span><span class="p">:</span><span class="mi">6</span><span class="p">])</span>
+
+	<span class="c1"># Return tuple (3 values in one python Object, must consider when reading output from this function)</span>
+	<span class="k">return</span> <span class="n">hours</span><span class="p">,</span><span class="n">minutes</span><span class="p">,</span><span class="n">seconds</span></div>
+<div class="viewcode-block" id="getsamplingperiods"><a class="viewcode-back" href="../tools.html#toolbox.getsamplingperiods">[docs]</a><span class="k">def</span> <span class="nf">getsamplingperiods</span><span class="p">(</span><span class="n">flist</span><span class="p">,</span><span class="n">tspan</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	*Sampling Periods*</span>
+
+
+<span class="sd">	**Parameters**</span>
+
+<span class="sd">	flist: `list`</span>
+<span class="sd">	    List of path/filename objects with all times where a dropsonde was measured.</span>
+<span class="sd">	tspan : `float`</span>
+<span class="sd">	    Time threshold. Maximum time allowed of difference between dropsonde measurements in one period.</span>
+
+<span class="sd">	This function gets the sampling periods of a storm.</span>
+<span class="sd">	A sampling period is a continous period of dropsonde measurements that provides un-interrupted measurements</span>
+<span class="sd">	with a maximum threshold (tspan) specified between measurements.</span>
+<span class="sd">	For instance,</span>
+
+<span class="sd">	.. code-block:: python</span>
+
+<span class="sd">		getsamplingperiods(dates,3.)</span>
+
+<span class="sd">	will allow 3 hours as the maximum time between measurements to define a sampling period. If, there are more than 3 hours</span>
+<span class="sd">	between a sequence of measurements and the next, the two sequences will account for two different-sets of measurements, i.e., two different sampling periods.</span>
+
+<span class="sd">	*Returns*</span>
+
+<span class="sd">	sampleperiods:`dictionary`</span>
+
+<span class="sd">	See also `dictionary &lt;https://docs.python.org/2/tutorial/datastructures.html&gt;`_ syntax.</span>
+
+
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="c1"># Empty list object.</span>
+	<span class="n">dates</span><span class="o">=</span><span class="p">[]</span>
+	<span class="c1"># Iteration over files.</span>
+	<span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">flist</span><span class="p">:</span>
+		<span class="c1"># Establish type of file.</span>
+		<span class="k">if</span> <span class="s1">&#39;radazm&#39;</span> <span class="ow">in</span> <span class="n">filename</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="ow">or</span> <span class="s1">&#39;eol&#39;</span> <span class="ow">in</span> <span class="n">filename</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+			<span class="n">ftype</span><span class="o">=</span><span class="s1">&#39;radazm&#39;</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">ftype</span><span class="o">=</span><span class="s1">&#39;avp&#39;</span>
+		<span class="c1"># Called property finding function.</span>
+		<span class="n">dicc</span><span class="o">=</span><span class="n">findproperties</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="n">ftype</span><span class="p">)</span>
+
+		<span class="c1"># Append to dates list.</span>
+		<span class="n">dates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dicc</span><span class="p">[</span><span class="s1">&#39;Launch Time&#39;</span><span class="p">])</span>
+
+	<span class="c1"># Sort dates, to start with earliest measurment.</span>
+	<span class="n">dates</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+
+	<span class="c1"># Create dictionary object.</span>
+	<span class="n">sampleperiods</span><span class="o">=</span><span class="p">{}</span>
+
+	<span class="c1"># Counter</span>
+	<span class="n">counter</span><span class="o">=</span><span class="mi">0</span>
+
+	<span class="c1"># while loop to avoid Error of large indexes to date=array</span>
+	<span class="k">while</span> <span class="n">counter</span><span class="o">&lt;</span><span class="nb">len</span><span class="p">(</span><span class="n">dates</span><span class="p">)</span><span class="o">-</span><span class="mi">2</span><span class="p">:</span>
+		<span class="c1"># Select initial date.</span>
+		<span class="n">dt0</span><span class="o">=</span><span class="n">dates</span><span class="p">[</span><span class="n">counter</span><span class="p">]</span>
+		<span class="c1"># Compute difference between this date and following date.</span>
+		<span class="n">dif</span><span class="o">=</span><span class="n">dates</span><span class="p">[</span><span class="n">counter</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">dt0</span>
+		<span class="c1"># Estimate hourly difference.</span>
+		<span class="n">hours</span><span class="p">,</span> <span class="n">remainder</span> <span class="o">=</span> <span class="nb">divmod</span><span class="p">(</span><span class="n">dif</span><span class="o">.</span><span class="n">seconds</span><span class="p">,</span> <span class="mi">3600</span><span class="p">)</span>
+
+		<span class="c1"># Second while loop</span>
+		<span class="k">while</span> <span class="n">hours</span> <span class="o">&lt;=</span><span class="n">tspan</span> <span class="ow">and</span> <span class="n">dif</span><span class="o">.</span><span class="n">days</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+			<span class="c1"># Add to counter for interation continues.</span>
+			<span class="n">counter</span><span class="o">+=</span><span class="mi">1</span>
+			<span class="c1"># Compute difference, notice explicit use of dates[counter] since dt0 must be saved to be dictionary key.</span>
+			<span class="n">dif</span><span class="o">=</span><span class="n">dates</span><span class="p">[</span><span class="n">counter</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">dates</span><span class="p">[</span><span class="n">counter</span><span class="p">]</span>
+			<span class="c1"># Get hours again.</span>
+			<span class="n">hours</span><span class="p">,</span> <span class="n">remainder</span> <span class="o">=</span> <span class="nb">divmod</span><span class="p">(</span><span class="n">dif</span><span class="o">.</span><span class="n">seconds</span><span class="p">,</span> <span class="mi">3600</span><span class="p">)</span>
+
+			<span class="c1"># Break sequence. Could this be commented out given the outer while-loop syntax?</span>
+			<span class="k">if</span> <span class="n">counter</span><span class="o">+</span><span class="mi">2</span><span class="o">==</span><span class="nb">len</span><span class="p">(</span><span class="n">dates</span><span class="p">):</span>
+				<span class="k">break</span>
+			<span class="c1"># no.</span>
+
+		<span class="c1">#Add key and content to dictionary using the first and last datetime objects in this period.</span>
+		<span class="n">sampleperiods</span><span class="p">[</span><span class="n">dt0</span><span class="p">]</span><span class="o">=</span><span class="n">dates</span><span class="p">[</span><span class="n">counter</span><span class="p">]</span>
+		<span class="c1"># Add to counter so next while loop</span>
+		<span class="n">counter</span><span class="o">+=</span><span class="mi">1</span>
+	<span class="k">return</span> <span class="n">sampleperiods</span></div>
+<div class="viewcode-block" id="cleanforcape"><a class="viewcode-back" href="../tools.html#toolbox.cleanforcape">[docs]</a><span class="k">def</span> <span class="nf">cleanforcape</span><span class="p">(</span><span class="n">T</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">dwpoint</span><span class="p">,</span><span class="n">dz</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	This function was created to clean fields relevant for CAPE calculations from NAN values.</span>
+<span class="sd">	In simple words, this function makes sure that all four input arguments are returned where ALL arrays have non-nan values at all points.</span>
+<span class="sd">	This cleaning function will allow further calculations to run smoothly.</span>
+
+<span class="sd">	*Parameters*</span>
+
+<span class="sd">	p: `pint.Quantity`</span>
+<span class="sd">	    The total atmospheric pressure in milibars.</span>
+<span class="sd">	T : `pint.Quantity`</span>
+<span class="sd">	    The temperature in Kelvin.</span>
+<span class="sd">	dwpoint :`np.array`</span>
+<span class="sd">		Dewpoint or relative humidity.</span>
+<span class="sd">	dz: `np.array`</span>
+<span class="sd">		Height array.</span>
+
+<span class="sd">	To be honest, this functon only nan-checks the lists and selects all indexes where no nans are found across the arrays.</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="n">newT</span><span class="o">=</span><span class="p">[]</span>
+	<span class="n">newdz</span><span class="o">=</span><span class="p">[]</span>
+	<span class="n">newp</span><span class="o">=</span><span class="p">[]</span>
+	<span class="n">newdw</span><span class="o">=</span><span class="p">[]</span>
+	<span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">temp</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
+		<span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">dwpoint</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">dz</span><span class="p">[</span><span class="n">i</span><span class="p">]):</span>
+			<span class="k">continue</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">newT</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span>
+			<span class="n">newp</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+			<span class="n">newdw</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dwpoint</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+			<span class="n">newdz</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dz</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+	<span class="k">return</span> <span class="n">newT</span><span class="p">,</span><span class="n">newp</span><span class="p">,</span><span class="n">newdw</span><span class="p">,</span><span class="n">newdz</span></div>
+
+<div class="viewcode-block" id="plotdrift"><a class="viewcode-back" href="../tools.html#toolbox.plotdrift">[docs]</a><span class="k">def</span> <span class="nf">plotdrift</span><span class="p">(</span><span class="n">filelist</span><span class="p">,</span><span class="n">track</span><span class="p">,</span><span class="n">storm</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	:ref:`sphx_glr_auto_examples_plot_drift.py`</span>
+
+<span class="sd">	*Parameters*</span>
+
+<span class="sd">	filelist: `list`</span>
+<span class="sd">		List of files to be used.</span>
+<span class="sd">	track: `dictionary`</span>
+<span class="sd">		Dictionary of track information. See :meth:`getrack`</span>
+<span class="sd">	storm: `string`</span>
+<span class="sd">		Storm name.</span>
+
+<span class="sd">	*Returns*</span>
+<span class="sd">		Figure Object</span>
+
+
+<span class="sd">	&quot;&quot;&quot;</span></div>
+<div class="viewcode-block" id="stormu"><a class="viewcode-back" href="../tools.html#toolbox.stormu">[docs]</a><span class="k">def</span> <span class="nf">stormu</span><span class="p">(</span><span class="n">u</span><span class="p">,</span><span class="n">v</span><span class="p">,</span><span class="n">date</span><span class="p">,</span><span class="n">dicc</span><span class="p">):</span>
+	<span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate the corresponding storm speed.</span>
+
+<span class="sd">	This function reads-in the storm speed at a particular datetime.</span>
+
+<span class="sd">	*Parameters*</span>
+
+<span class="sd">	u : `np.float`</span>
+<span class="sd">	    X-component of wind speed.</span>
+<span class="sd">	v : `np.float`</span>
+<span class="sd">	    Y-component of wind speed</span>
+<span class="sd">	date : `datetime.datetime`</span>
+<span class="sd">	 	Date where speed is needed.</span>
+<span class="sd">	dicc : `dictionary`</span>
+<span class="sd">		Track dictionary with, track, speed and corresponding datetimes.</span>
+
+<span class="sd">	*Returns*</span>
+
+<span class="sd">	`tuple` : (newu,newv)</span>
+<span class="sd">	    Either returns new storm-relative x and y-component wind speeds or it can return</span>
+
+<span class="sd">	Formula:</span>
+
+<span class="sd">	.. math:: u_{sr}=u_{obs}-u_{storm}</span>
+
+<span class="sd">	where :math:`u_{sr}` is the storm relative winds, :math:`u_{obs}` is the observed wind and :math:`u_{storm}` is the estimated</span>
+<span class="sd">	storm wind speed.</span>
+
+<span class="sd">	*Examples*</span>
+
+<span class="sd">	&gt;&gt;&gt; from toolbox import stormu</span>
+<span class="sd">	&gt;&gt;&gt; newu,newv=stormu(u,v,date,trackdicc)</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+	<span class="c1"># Extract date array from dictionary</span>
+	<span class="n">dates</span><span class="o">=</span><span class="n">dicc</span><span class="p">[</span><span class="s1">&#39;Datetime&#39;</span><span class="p">]</span>
+
+	<span class="c1"># Convert dates to object datetime</span>
+	<span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">dt</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">dates</span><span class="p">):</span>
+		<span class="n">dates</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span>
+
+
+	<span class="c1"># Extract u and v speeds from dictionary</span>
+	<span class="n">us</span><span class="o">=</span><span class="n">dicc</span><span class="p">[</span><span class="s1">&#39;U&#39;</span><span class="p">]</span>
+	<span class="n">date</span><span class="o">=</span><span class="n">date</span><span class="o">+</span><span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">minutes</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span>
+	<span class="n">vs</span><span class="o">=</span><span class="n">dicc</span><span class="p">[</span><span class="s1">&#39;V&#39;</span><span class="p">]</span>
+
+	<span class="c1"># Empty lists for storm speeds.</span>
+	<span class="n">uu</span><span class="o">=</span><span class="p">[]</span>
+	<span class="n">vv</span><span class="o">=</span><span class="p">[]</span>
+
+	<span class="c1"># Loop to find speeds in and around 1 hour of our current date (date).</span>
+	<span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">dt</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">dates</span><span class="p">):</span>
+		<span class="c1"># 2 h threshold</span>
+		<span class="k">if</span> <span class="n">dt</span><span class="o">&gt;</span><span class="n">date</span><span class="o">-</span><span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="ow">and</span> <span class="n">dt</span><span class="o">&lt;</span><span class="n">date</span><span class="o">+</span><span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+			<span class="n">uu</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">us</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+			<span class="n">vv</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">vs</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+	<span class="c1"># Follow formula using mean of storm speeds around 1 hour</span>
+	<span class="n">newu</span><span class="o">=</span><span class="n">u</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">uu</span><span class="p">)</span>
+	<span class="n">newv</span><span class="o">=</span><span class="n">v</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">vv</span><span class="p">)</span>
+	<span class="c1"># Return new u and new v.</span>
+	<span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">uu</span><span class="p">),</span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">vv</span><span class="p">)</span></div>
+<div class="viewcode-block" id="getcenter"><a class="viewcode-back" href="../tools.html#toolbox.getcenter">[docs]</a><span class="k">def</span> <span class="nf">getcenter</span><span class="p">(</span><span class="n">date</span><span class="p">,</span><span class="n">track</span><span class="p">):</span>
+	<span class="sa">r</span><span class="sd">&quot;&quot;&quot; Obtain longitude and latitude of storm centre.</span>
+
+<span class="sd">	This function is part of a basic part of most routines as it reads-in a date and the track-dictionary and returns the best approximation</span>
+<span class="sd">	to the stomr&#39;s centre in degrees.</span>
+
+<span class="sd">	*Parameters*</span>
+
+<span class="sd">	date : `datetime`</span>
+<span class="sd">	    Date to seek storm centre.</span>
+<span class="sd">	track : `dictionary`</span>
+<span class="sd">	    Typical dictionary obtained from :meth:`flightdata.trackandspeed`</span>
+
+<span class="sd">	*Returns*</span>
+
+<span class="sd">	`tuple` : (latf,lonf)</span>
+<span class="sd">	    Return of two floats as a tuple, the final latitude (latf) and longitude (lonf).</span>
+
+
+<span class="sd">	This script uses two main approaches, first seeking all track data in a 20 min window to obtain an average and,</span>
+<span class="sd">	if no track values are reported in the window, the closest track value is used.</span>
+
+<span class="sd">	*Examples*</span>
+
+<span class="sd">	&gt;&gt;&gt; from toolbox import getcenter</span>
+<span class="sd">	&gt;&gt;&gt; centrelat,centrelon=getcenter(datetime.datetime(2003,9,14,2,0,0),trackdict)</span>
+
+<span class="sd">	.. note::</span>
+
+<span class="sd">		Notice this script makes use of conventional and particular syntax. For instance, timedeltas are conventionally named (td) in datetime modules.</span>
+
+
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="c1">#Unpack data from track big dictionary into a datetime list (trackdates), latitudes (traclat), longitude (traclon) and allocates the speed dictionary (not used here).</span>
+	<span class="n">trackdates</span><span class="p">,</span><span class="n">traclat</span><span class="p">,</span><span class="n">traclon</span><span class="p">,</span><span class="n">dicc</span><span class="o">=</span><span class="n">track</span>
+
+	<span class="c1">#Grab first date in track record.</span>
+	<span class="n">goodate</span><span class="o">=</span><span class="n">trackdates</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+	<span class="c1"># Account for date difference (track is 1 hour ahead)</span>
+	<span class="n">date</span><span class="o">=</span><span class="n">date</span><span class="o">+</span><span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">minutes</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span>
+
+	<span class="c1"># Select how difference or timedelta (td) in datetimes is computed, the oldest date minus the earliest date so difference is positive.</span>
+	<span class="k">if</span> <span class="n">goodate</span><span class="o">&gt;</span><span class="n">date</span><span class="p">:</span>
+		<span class="n">td</span><span class="o">=</span><span class="n">goodate</span><span class="o">-</span><span class="n">date</span>
+	<span class="k">else</span><span class="p">:</span>
+		<span class="n">td</span><span class="o">=</span><span class="n">date</span><span class="o">-</span><span class="n">goodate</span>
+
+	<span class="c1"># Create empty lists to be used as arrays to get average storm centre from all close times.</span>
+	<span class="n">lats</span><span class="o">=</span><span class="p">[]</span>
+	<span class="n">lons</span><span class="o">=</span><span class="p">[]</span>
+
+	<span class="c1"># Iterate over all track dates tdat.</span>
+	<span class="k">for</span> <span class="n">index</span><span class="p">,</span><span class="n">tdat</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">trackdates</span><span class="p">):</span>
+		<span class="c1"># Condition to determine how timedelta (td) is computed.</span>
+		<span class="k">if</span> <span class="n">date</span> <span class="o">&gt;</span> <span class="n">tdat</span><span class="p">:</span>
+			<span class="n">newtd</span><span class="o">=</span><span class="n">date</span><span class="o">-</span><span class="n">tdat</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">newtd</span><span class="o">=</span><span class="n">tdat</span><span class="o">-</span><span class="n">date</span>
+
+		<span class="c1"># Timedelta threshold of 10 minutes. Notice that from the timedelta definition, this is a 20 min. window.</span>
+		<span class="k">if</span> <span class="n">newtd</span><span class="o">&lt;</span><span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">minutes</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+			<span class="c1"># Append latitude and longitude in this time-step, if condition is true.</span>
+			<span class="n">lats</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">traclat</span><span class="p">[</span><span class="n">index</span><span class="p">])</span>
+			<span class="n">lons</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">traclon</span><span class="p">[</span><span class="n">index</span><span class="p">])</span>
+			<span class="c1"># Possible user print, to see exactly how track location and times are sliced.</span>
+			<span class="c1">#print(date,goodate,dates,traclat[i],traclon[i])</span>
+
+		<span class="c1"># Condition to find closest track time to the observation time.</span>
+		<span class="c1"># In other words, finding the minimum timedelta.</span>
+		<span class="k">if</span> <span class="n">newtd</span><span class="o">&lt;</span><span class="n">td</span><span class="p">:</span>
+			<span class="c1"># Goodate is not used but it is the closest time and it is good to keep it as a reference and might be printed above.</span>
+			<span class="n">goodate</span><span class="o">=</span><span class="n">tdat</span>
+
+			<span class="c1"># Allocate closest latitude and longitude. Variables will be overwritten when a closer time is found.</span>
+			<span class="n">lat</span><span class="o">=</span><span class="n">traclat</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+			<span class="n">lon</span><span class="o">=</span><span class="n">traclon</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+
+	<span class="c1"># If more than 1 track time is found in the 20 min window, the track centre is defined as the mean from the list of</span>
+	<span class="c1"># all near centre observations</span>
+	<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">lats</span><span class="p">)</span><span class="o">&gt;=</span><span class="mi">2</span><span class="p">:</span>
+		<span class="c1"># possible user print to see the lats list.</span>
+		<span class="c1">#print(lats)</span>
+
+		<span class="c1"># Define final latitude (latf) and longitude (lonf).</span>
+		<span class="n">latf</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">lats</span><span class="p">))</span>
+		<span class="n">lonf</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">lons</span><span class="p">))</span>
+
+	<span class="c1"># If not enough close times exist in the window, track centre is reported as the closest time.</span>
+	<span class="k">else</span><span class="p">:</span>
+		<span class="n">latf</span><span class="o">=</span><span class="n">lat</span>
+		<span class="n">lonf</span><span class="o">=</span><span class="n">lon</span>
+
+	<span class="c1"># Return tuple of storm centre latitude and longitude .</span>
+	<span class="k">return</span> <span class="n">latf</span><span class="p">,</span><span class="n">lonf</span></div>
+<div class="viewcode-block" id="cart_to_cylindr"><a class="viewcode-back" href="../tools.html#toolbox.cart_to_cylindr">[docs]</a><span class="k">def</span> <span class="nf">cart_to_cylindr</span><span class="p">(</span><span class="n">lon</span><span class="p">,</span><span class="n">lat</span><span class="p">,</span><span class="n">track</span><span class="p">,</span><span class="n">dates</span><span class="p">):</span>
+	<span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">	* Cartesian to Cylindrical *</span>
+
+<span class="sd">	Convert coordinates from a dropsonde observation in cartesian coordinates :math:`(x,y)` to a cylindrical system :math:`(r,\theta)`.</span>
+
+<span class="sd">	This function is part of the main part of most scripts since Tropical Cyclones are usually depicted in cylindrical systems, not in cartesian.</span>
+<span class="sd">	As such, extreme care was taken into this function and reader is advised to look carefully at all steps of this function.</span>
+
+<span class="sd">	*Parameters*</span>
+
+<span class="sd">	lon : `float`</span>
+<span class="sd">	    Longitude of observation point in degrees.</span>
+<span class="sd">	lat : `float`</span>
+<span class="sd">	    Latitude of observation point in degrees.</span>
+<span class="sd">	track: `dictionary`</span>
+<span class="sd">		Track dictionary from :meth:`flightdata.trackandspeed`.</span>
+<span class="sd">	dates: `datetime`</span>
+<span class="sd">		Date and time of observation.</span>
+
+<span class="sd">	*Returns*</span>
+
+<span class="sd">	`tuple` : (r,theta)</span>
+<span class="sd">	    Return of two floats as a tuple, the final radius (r) and azimuth (theta).</span>
+
+<span class="sd">	While this script could be self-contained it mostly depends on two other functions :meth:`distance` and</span>
+<span class="sd">	:meth:`getcenter`. The latter retrieves the closest storm centre and the former computes distances between two lat-lon points.</span>
+
+<span class="sd">	While :meth:`distance` documents how a distance between two points on a sphere is computed :math:`(r)``, the other part of a cylindrical</span>
+<span class="sd">	coordinate system is the azimuth :math:`\theta`.</span>
+
+<span class="sd">	That computation obeys a different mathematical approach. Specifically, to estimate the `azimuth &lt;https://en.wikipedia.org/wiki/Azimuth&gt;`_ between two points on the surface of a sphere</span>
+<span class="sd">	nautical term of *bearing* is used.</span>
+
+<span class="sd">	The bearing or azimuth is given by:</span>
+
+<span class="sd">	.. math:: \theta=\frac{\pi}{2}+arctan\bigg(sin(\Delta \lambda)cos(\varphi_1),cos(\varphi_1)sin(\varphi_2)-sin(\varphi_1)cos(\varphi_2)*cos(\Delta \lambda)\bigg)</span>
+
+<span class="sd">	determined by:</span>
+
+<span class="sd">	* :math:`theta`: Azimuth/bearing in a cylindrical system.</span>
+<span class="sd">	* :math:`\Delta \varphi=\varphi _2-\varphi _1` Latitude difference between centre and observation.</span>
+<span class="sd">	* :math:`\varphi_1` Latitude of centre [radians].</span>
+<span class="sd">	* :math:`\varphi_2` Latitude of observation [radians].</span>
+<span class="sd">	* :math:`\Delta \lambda=\lambda _2-\lambda _1` Longitude difference between centre and observation.</span>
+
+
+<span class="sd">	Notice how the formula has a correcting factor which accounts for the fact that a bearing usually is measured as the angle between the north (remember this was initially computed for sailing) and the location of the destination.</span>
+<span class="sd">	For this reason, we add :math:`=\frac{\pi}{2}` to establish a proper cylindrical system where the 0\degree is aligned with the :math:`x&gt;0` and :math:`y=0` line.</span>
+
+<span class="sd">	*Examples*</span>
+
+<span class="sd">	&gt;&gt;&gt; from toolbox import getcenter</span>
+<span class="sd">	&gt;&gt;&gt; centrelat,centrelon=getcenter(datetime.datetime(2003,9,14,2,0,0),trackdict)</span>
+
+<span class="sd">	.. note::</span>
+
+<span class="sd">		For further information, good revisions on the derviation of the `Havesine formula &lt;https://www.math.ksu.edu/~dbski/writings/haversine.pdf&gt;`_ and the `bearing &lt;https://www.movable-type.co.uk/scripts/latlong.html&gt;`_ are attached.</span>
+
+
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="c1"># Conversion of observation points to radians.</span>
+	<span class="n">lat2</span> <span class="o">=</span> <span class="n">radians</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">lat</span><span class="p">))</span>
+	<span class="n">lon2</span> <span class="o">=</span> <span class="n">radians</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">lon</span><span class="p">))</span>
+
+	<span class="c1"># Obtain enter latitudes and longitudes.</span>
+	<span class="n">clat</span><span class="p">,</span><span class="n">clon</span><span class="o">=</span><span class="n">getcenter</span><span class="p">(</span><span class="n">dates</span><span class="p">,</span><span class="n">track</span><span class="p">)</span>
+
+	<span class="c1"># Conversion to radians of centre coordinates.</span>
+	<span class="n">lat1</span><span class="o">=</span><span class="n">radians</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">clat</span><span class="p">))</span>
+	<span class="n">lon1</span><span class="o">=</span><span class="n">radians</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">clon</span><span class="p">))</span>
+
+	<span class="c1"># Compute distance between centre and observation point.</span>
+	<span class="n">r</span><span class="o">=</span><span class="n">distance</span><span class="p">(</span><span class="n">lat1</span><span class="p">,</span><span class="n">lon1</span><span class="p">,</span><span class="n">lat2</span><span class="p">,</span><span class="n">lon2</span><span class="p">)</span>
+
+	<span class="c1"># Compute deltas of longitude and latitudes.</span>
+	<span class="n">dlon</span> <span class="o">=</span> <span class="n">lon2</span> <span class="o">-</span> <span class="n">lon1</span>
+	<span class="n">dlat</span> <span class="o">=</span> <span class="n">lat2</span> <span class="o">-</span> <span class="n">lat1</span>
+
+	<span class="c1"># Compute bearing in one step.</span>
+	<span class="n">theta2</span><span class="o">=</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">dlon</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">lat2</span><span class="p">),</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">lat1</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">lat2</span><span class="p">)</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">lat1</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">lat2</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">dlon</span><span class="p">))</span>
+
+	<span class="c1"># Rearrange negative bearing to be positive, theta is then a subspace of azimuths from 0 ... 2 pi.</span>
+	<span class="k">if</span> <span class="n">theta2</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">:</span>
+		<span class="n">theta2</span><span class="o">=</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">+</span><span class="n">theta2</span>
+
+	<span class="c1"># Return cylindrical coordinate system.</span>
+	<span class="k">return</span> <span class="n">r</span><span class="p">,</span><span class="n">theta2</span></div>
+<div class="viewcode-block" id="equivalent_potential_temperature"><a class="viewcode-back" href="../tools.html#toolbox.equivalent_potential_temperature">[docs]</a><span class="k">def</span> <span class="nf">equivalent_potential_temperature</span><span class="p">(</span><span class="n">pressure</span><span class="p">,</span> <span class="n">temperature</span><span class="p">,</span> <span class="n">dewpoint</span><span class="p">):</span>
+	<span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate equivalent potential temperature.</span>
+
+<span class="sd">	This calculation must be given an air parcel&#39;s pressure, temperature, and dewpoint.</span>
+<span class="sd">	The implementation uses the formula outlined in :cite:`Bolton1980`:</span>
+
+<span class="sd">	First, the LCL temperature is calculated:</span>
+
+<span class="sd">	.. math:: T_{L}=\frac{1}{\frac{1}{T_{D}-56}+\frac{ln(T_{K}/T_{D})}{800}}+56</span>
+
+<span class="sd">	Which is then used to calculate the potential temperature at the LCL:</span>
+
+<span class="sd">	.. math:: \theta_{DL}=T_{K}\left(\frac{1000}{p-e}\right)^k</span>
+<span class="sd">	          \left(\frac{T_{K}}{T_{L}}\right)^{.28r}</span>
+
+<span class="sd">	Both of these are used to calculate the final equivalent potential temperature:</span>
+
+<span class="sd">	.. math:: \theta_{E}=\theta_{DL}\exp\left[\left(\frac{3036.}{T_{L}}</span>
+<span class="sd">	                                          -1.78\right)*r(1+.448r)\right]</span>
+
+<span class="sd">	**Parameters**</span>
+
+<span class="sd">	pressure: `pint.Quantity`</span>
+<span class="sd">	    Total atmospheric pressure</span>
+<span class="sd">	temperature: `pint.Quantity`</span>
+<span class="sd">	    Temperature of parcel</span>
+<span class="sd">	dewpoint: `pint.Quantity`</span>
+<span class="sd">	    Dewpoint of parcel</span>
+
+<span class="sd">	**Returns**</span>
+
+<span class="sd">	`pint.Quantity`</span>
+<span class="sd">	    The equivalent potential temperature of the parcel</span>
+
+<span class="sd">	Notes</span>
+<span class="sd">	-----</span>
+<span class="sd">	[Bolton1980]_ formula for Theta-e is used, since it is the most accurate non-iterative formulation</span>
+<span class="sd">	available.</span>
+
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="n">t</span> <span class="o">=</span> <span class="n">temperature</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s1">&#39;kelvin&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">magnitude</span>
+	<span class="n">td</span> <span class="o">=</span> <span class="n">dewpoint</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s1">&#39;kelvin&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">magnitude</span>
+	<span class="n">p</span> <span class="o">=</span> <span class="n">pressure</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s1">&#39;hPa&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">magnitude</span>
+	<span class="n">e</span> <span class="o">=</span> <span class="n">mpcalc</span><span class="o">.</span><span class="n">saturation_vapor_pressure</span><span class="p">(</span><span class="n">dewpoint</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s1">&#39;hPa&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">magnitude</span>
+	<span class="n">r</span> <span class="o">=</span> <span class="n">mpcalc</span><span class="o">.</span><span class="n">saturation_mixing_ratio</span><span class="p">(</span><span class="n">pressure</span><span class="p">,</span> <span class="n">dewpoint</span><span class="p">)</span><span class="o">.</span><span class="n">magnitude</span>
+	<span class="n">kappa</span><span class="o">=</span><span class="mf">0.2854</span>
+	<span class="n">t_l</span> <span class="o">=</span> <span class="mi">56</span> <span class="o">+</span> <span class="mf">1.</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">/</span> <span class="p">(</span><span class="n">td</span> <span class="o">-</span> <span class="mi">56</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">t</span> <span class="o">/</span> <span class="n">td</span><span class="p">)</span> <span class="o">/</span> <span class="mf">800.</span><span class="p">)</span>
+	<span class="n">th_l</span> <span class="o">=</span> <span class="n">t</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1000</span> <span class="o">/</span> <span class="p">(</span><span class="n">p</span> <span class="o">-</span> <span class="n">e</span><span class="p">))</span> <span class="o">**</span> <span class="n">kappa</span> <span class="o">*</span> <span class="p">(</span><span class="n">t</span> <span class="o">/</span> <span class="n">t_l</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="mf">0.28</span> <span class="o">*</span> <span class="n">r</span><span class="p">)</span>
+	<span class="n">th_e</span> <span class="o">=</span> <span class="n">th_l</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">((</span><span class="mf">3036.</span> <span class="o">/</span> <span class="n">t_l</span> <span class="o">-</span> <span class="mf">1.78</span><span class="p">)</span> <span class="o">*</span> <span class="n">r</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="mf">0.448</span> <span class="o">*</span> <span class="n">r</span><span class="p">))</span>
+
+	<span class="k">return</span> <span class="n">th_e</span> <span class="o">*</span> <span class="n">units</span><span class="o">.</span><span class="n">kelvin</span></div>
+<div class="viewcode-block" id="convergence_vorticity"><a class="viewcode-back" href="../tools.html#toolbox.convergence_vorticity">[docs]</a><span class="k">def</span> <span class="nf">convergence_vorticity</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">xvec</span><span class="p">,</span><span class="n">yvec</span><span class="p">,</span> <span class="n">dim_order</span><span class="o">=</span><span class="s1">&#39;xy&#39;</span><span class="p">):</span>
+	<span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate the horizontal divergence and vertical vorticity of the horizontal wind.</span>
+
+<span class="sd">    This function was originally a Metpy function but it has been modified for PyDropsondes.</span>
+<span class="sd">    In this sense, convergence and vorticity are computed using `numpy function gradient &lt;https://docs.scipy.org/doc/numpy-1.14.0/reference/generated/numpy.gradient.html&gt;`_.</span>
+<span class="sd">    This gives the first derivative on the two spatial components of a given field, just as both convergence and divergence are defined.</span>
+
+
+<span class="sd">	Parameters</span>
+<span class="sd">	----------</span>
+<span class="sd">	u : (M, N) ndarray</span>
+<span class="sd">		x component of the wind</span>
+<span class="sd">	v : (M, N) ndarray</span>
+<span class="sd">		y component of the wind</span>
+<span class="sd">	xvec : float</span>
+<span class="sd">		The grid spacing or vector in the x-direction</span>
+<span class="sd">	yvec : float</span>
+<span class="sd">		The grid spacing or vector in the y-direction</span>
+
+<span class="sd">	Returns</span>
+<span class="sd">	-------</span>
+<span class="sd">	divergence, vorticity : tuple of (M, N) ndarrays</span>
+<span class="sd">	The horizontal divergence and vertical vorticity, respectively.</span>
+
+<span class="sd">	&quot;&quot;&quot;</span>
+
+    <span class="c1"># Gradient computation</span>
+	<span class="n">gradu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">gradient</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">xvec</span><span class="o">*</span><span class="mi">1000</span><span class="p">,</span><span class="n">yvec</span><span class="o">*</span><span class="mi">1000</span><span class="p">)</span>
+	<span class="n">gradv</span> <span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">gradient</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="n">xvec</span><span class="o">*</span><span class="mi">1000</span><span class="p">,</span><span class="n">yvec</span><span class="o">*</span><span class="mi">1000</span><span class="p">)</span>
+
+    <span class="c1"># Allocate derivates.</span>
+	<span class="n">dudy</span><span class="p">,</span><span class="n">dudx</span><span class="o">=</span><span class="n">gradu</span>
+	<span class="n">dvdy</span><span class="p">,</span><span class="n">dvdx</span><span class="o">=</span><span class="n">gradv</span>
+
+
+    <span class="c1"># Return convergence first, then vorticity.</span>
+	<span class="k">return</span> <span class="p">(</span><span class="n">dudx</span> <span class="o">+</span> <span class="n">dvdy</span><span class="p">),</span> <span class="p">(</span><span class="n">dvdx</span> <span class="o">-</span> <span class="n">dudy</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Garcia-Franco J.L..
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

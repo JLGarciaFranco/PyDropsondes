@@ -1,0 +1,26 @@
+.. Process
+
+Process Dropsondes
+========================
+
+This module will read-in all the droponsdes of a particular storm, select the dropsondes that are in and or near the inner core and finally
+write all processed and cleaned fields into a txt file that can then be used to plot or post-process.
+
+The dropsonde dataset from :cite:`wang2015` is provided with all the necessary filters and quality checks, however,
+several NAN values are still reported, therefore some extra-care must be taken when reading-in and managing these observations.
+
+.. figure:: imgs/dropsonde_1.png
+
+    NOAA’s dropsonde in its descent equipped with a parachute.
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+
+
+.. automodule:: processing
+.. autofunction:: read_process_write
+
+
+.. bibliography:: fulltropical.bib

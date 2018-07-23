@@ -1,0 +1,410 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>1. Plotting the track of a Tropical Cyclone &mdash; PyDropsondes 1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../_static/gallery.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="PyDropsondes 1 documentation" href="../index.html"/>
+        <link rel="up" title="Gallery of Examples" href="../gallery.html"/>
+        <link rel="next" title="2. Plotting the intensity metrics of a Tropical Cyclone" href="plot_intensity_series.html"/>
+        <link rel="prev" title="Gallery of Examples" href="../gallery.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../home.html" class="icon icon-home"> PyDropsondes
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Table of Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../userguide.html">User guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../interface.html">The Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../flight.html">Flightdata</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../process.html">Process Dropsondes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools.html">The Toolbox</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../gallery.html">Gallery of Examples</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">1. Plotting the track of a Tropical Cyclone</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#expected-plot-for-isabel-in-2003">1.1. Expected plot for Isabel in 2003:</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="plot_intensity_series.html">2. Plotting the intensity metrics of a Tropical Cyclone</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_drift_dropsondes.html">3. Plot the drift of all dropsondes for a TC</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_winds_temp.html">4. Plot the wind and temperature structure of a TC</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_kinematic3D.html">5. Plot vorticity and divergence in 3D views</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_gradwindbalanc.html">Evaluate gradient wind balance and momentum!</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_cape.html">6. Plot CAPE distributions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gallery.html#examples-for-dummies">Examples for Dummies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gallery.html#intermediate-examples">Intermediate examples</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../home.html">PyDropsondes</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../home.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../gallery.html">Gallery of Examples</a> &raquo;</li>
+        
+      <li>1. Plotting the track of a Tropical Cyclone</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/examples/plotrack.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="plotting-the-track-of-a-tropical-cyclone">
+<span id="sphx-glr-auto-examples-plot-track-py"></span><h1>1. Plotting the track of a Tropical Cyclone<a class="headerlink" href="#plotting-the-track-of-a-tropical-cyclone" title="Permalink to this headline">¶</a></h1>
+<p>This example provides a map of the track of a particular tropical cyclone.
+The map gives a sense of the longevity of the storm and the strength across its path.</p>
+<p>The first and foremost part of this example is the preamble. It is absolutely necessary
+that you have all these packages, in particular look out for Basemap!</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># Basemap is a python-module to create accurate and stylish maps.</span>
+<span class="kn">from</span> <span class="nn">mpl_toolkits.basemap</span> <span class="kn">import</span> <span class="n">Basemap</span>
+<span class="c1"># Numpy is our friend, it is the most important module.</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="c1"># Dates and time module</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="c1"># Patches is a secondary tool used to create the handles of the strength-legend.</span>
+<span class="kn">import</span> <span class="nn">matplotlib.patches</span> <span class="kn">as</span> <span class="nn">mpatches</span>
+<span class="c1"># Pandas, unlike the bear, is used by python to read-in databases, in this case for the track database.</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="c1"># We import the function distance from our toolbox.</span>
+<span class="kn">from</span> <span class="nn">toolbox</span> <span class="kn">import</span> <span class="n">distance</span>
+<span class="c1"># We import matplotlib, the graphing module tool of python. The abbreviation plt, as np and pd are used as conventional Python docs indicate.</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="c1"># trackhandles is an auxiliary script to create Handle Objects.</span>
+<span class="kn">from</span> <span class="nn">trackhandles</span> <span class="kn">import</span> <span class="o">*</span>
+</pre></div>
+</div>
+<p>After importing our modules, we make use of the function <span class="xref std std-ref">getrack</span> which reads in the
+data and <em>gets the track</em> by returning longitude, latitude, windspeed and intensity every 6 h.
+This section uses the file <em>track_w.csv</em> which must have been provided to you.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># Get track function of storm and year.</span>
+<span class="k">def</span> <span class="nf">getrack</span><span class="p">(</span><span class="n">storm</span><span class="p">,</span><span class="n">year</span><span class="p">):</span>
+    <span class="c1"># we use pandas to read in the data as a Pandas.DataFrame. As pandas-convention dictates, df =dataframe is used as variable name for the object.</span>
+    <span class="n">df</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;track_w.csv&#39;</span><span class="p">)</span>
+    <span class="c1"># We select the storm by also indicating the year. Storm names can be repeated!</span>
+    <span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">[(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Storm Name&#39;</span><span class="p">]</span><span class="o">==</span><span class="n">storm</span><span class="o">.</span><span class="n">upper</span><span class="p">())</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Year&#39;</span><span class="p">]</span><span class="o">==</span><span class="nb">int</span><span class="p">(</span><span class="n">year</span><span class="p">))]</span>
+    <span class="c1"># Pandas DataFrame use indexes, which are useful as they sort our data by date.</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Datetime&#39;</span><span class="p">]</span>
+    <span class="c1"># Convert index to datetime-objects</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+    <span class="c1"># empty lists to be filled with values of the track.</span>
+    <span class="n">latitudes</span><span class="o">=</span><span class="p">[]</span>
+    <span class="n">longitudes</span><span class="o">=</span><span class="p">[]</span>
+    <span class="n">windspeeds</span><span class="o">=</span><span class="p">[]</span>
+    <span class="n">Intensity_label</span><span class="o">=</span><span class="p">[]</span>
+    <span class="c1"># Iterate over the dates in the pandas dataframe index</span>
+    <span class="k">for</span> <span class="n">date</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
+        <span class="c1"># Select values for current date.</span>
+        <span class="n">values</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">date</span><span class="p">]</span>
+        <span class="c1"># Append-paste to lists</span>
+        <span class="n">latitudes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="s1">&#39;Latitude&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">:</span><span class="mi">4</span><span class="p">]))</span>
+        <span class="n">longitudes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="o">-</span><span class="nb">float</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="s1">&#39;Longitude&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">:</span><span class="mi">5</span><span class="p">]))</span>
+        <span class="n">windspeeds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="s1">&#39;windspeed&#39;</span><span class="p">]))</span>
+        <span class="n">Intensity_label</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="s1">&#39;Intensity&#39;</span><span class="p">])</span>
+    <span class="c1"># Return track records.</span>
+    <span class="k">return</span> <span class="n">longitudes</span><span class="p">,</span><span class="n">latitudes</span><span class="p">,</span><span class="n">windspeeds</span><span class="p">,</span><span class="n">Intensity_label</span><span class="p">,</span><span class="n">df</span><span class="o">.</span><span class="n">index</span>
+</pre></div>
+</div>
+<p>After obtaining the track from the best track datafile, plotting occurs through
+the next function <span class="xref std std-ref">plotrack</span>. This function is called by the main script if you decide to plot the track but it can
+be used as a standalone if you input the storm and year.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">plotrack</span><span class="p">(</span><span class="n">storm</span><span class="p">,</span><span class="n">year</span><span class="p">):</span>
+    <span class="c1"># Call getrack function and allocate variable names</span>
+    <span class="n">lon</span><span class="p">,</span><span class="n">lat</span><span class="p">,</span><span class="n">speedvec</span><span class="p">,</span><span class="n">intensity</span><span class="p">,</span><span class="n">dates</span><span class="o">=</span><span class="n">getrack</span><span class="p">(</span><span class="n">storm</span><span class="p">,</span><span class="n">year</span><span class="p">)</span>
+    <span class="c1"># Determine map size according to how the track is distributed</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">lon</span><span class="p">)</span><span class="o">&gt;</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">lat</span><span class="p">):</span>
+        <span class="n">legend_location</span><span class="o">=</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span><span class="o">-</span><span class="mf">0.015</span><span class="p">)</span>
+        <span class="n">columns</span><span class="o">=</span><span class="mi">3</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">17</span><span class="p">,</span><span class="mi">14</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">legend_location</span><span class="o">=</span><span class="p">(</span><span class="mf">1.05</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">columns</span><span class="o">=</span><span class="mi">1</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span><span class="mi">12</span><span class="p">))</span>
+    <span class="c1"># Create basemap object depending on track parameters of latitude and longitude.</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">Basemap</span><span class="p">(</span><span class="n">llcrnrlon</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">(</span><span class="n">lon</span><span class="p">)</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span><span class="n">llcrnrlat</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">(</span><span class="n">lat</span><span class="p">)</span><span class="o">-</span><span class="mf">2.5</span><span class="p">,</span><span class="n">urcrnrlon</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">lon</span><span class="p">)</span><span class="o">+</span><span class="mf">2.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">lon</span><span class="p">),</span><span class="n">urcrnrlat</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">lat</span><span class="p">)</span><span class="o">+</span><span class="mf">2.5</span><span class="p">,</span>
+                <span class="n">projection</span><span class="o">=</span><span class="s1">&#39;lcc&#39;</span><span class="p">,</span><span class="n">lon_0</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">lon</span><span class="p">),</span><span class="n">lat_0</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">lat</span><span class="p">),</span>
+                <span class="n">resolution</span> <span class="o">=</span><span class="s1">&#39;l&#39;</span><span class="p">,</span><span class="n">area_thresh</span><span class="o">=</span><span class="mf">1000.</span><span class="p">)</span>
+    <span class="c1"># Basemap style to draw coastlines, countries and states (important if looking at high-impact storms)</span>
+    <span class="n">m</span><span class="o">.</span><span class="n">bluemarble</span><span class="p">()</span>
+    <span class="n">m</span><span class="o">.</span><span class="n">drawcoastlines</span><span class="p">()</span>
+    <span class="n">m</span><span class="o">.</span><span class="n">drawcountries</span><span class="p">()</span>
+    <span class="n">m</span><span class="o">.</span><span class="n">drawstates</span><span class="p">()</span>
+    <span class="c1"># Drawing parallels and meridians with certain 10 and 15 degrees spacing, respectively.</span>
+    <span class="n">parallels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mi">81</span><span class="p">,</span><span class="mf">10.</span><span class="p">)</span>
+    <span class="n">m</span><span class="o">.</span><span class="n">drawparallels</span><span class="p">(</span><span class="n">parallels</span><span class="p">,</span><span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="bp">False</span><span class="p">,</span><span class="bp">True</span><span class="p">,</span><span class="bp">True</span><span class="p">,</span><span class="bp">False</span><span class="p">],</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;wheat&#39;</span><span class="p">)</span>
+    <span class="n">meridians</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">351.</span><span class="p">,</span><span class="mf">15.</span><span class="p">)</span>
+    <span class="n">m</span><span class="o">.</span><span class="n">drawmeridians</span><span class="p">(</span><span class="n">meridians</span><span class="p">,</span><span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="bp">True</span><span class="p">,</span><span class="bp">False</span><span class="p">,</span><span class="bp">False</span><span class="p">,</span><span class="bp">True</span><span class="p">],</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;white&#39;</span><span class="p">)</span>
+    <span class="c1"># Status will be part of the final title of this plot, Tropical Cyclones are named usually after their strongest status, Hurricane, Tropical Storm and so on.</span>
+    <span class="n">status</span><span class="o">=</span><span class="s1">&#39;&#39;</span>
+    <span class="c1"># Daylist is the actual days that this storm lasted. The following loop will fill it with all the days with a track value.</span>
+    <span class="n">daylist</span><span class="o">=</span><span class="p">[]</span>
+    <span class="c1"># Iterate over the speed array, it could easily be longitude or latitude since they are the same length but you can tell why this makes things easier.</span>
+    <span class="k">for</span> <span class="n">index</span><span class="p">,</span><span class="n">speed</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">speedvec</span><span class="p">):</span>
+        <span class="c1"># The following ifs determine the color and size of the marker in the plot, according to the legend.</span>
+        <span class="c1"># Funny enough, first we define the marker colors and it is until the end of the loop that we determine the legend</span>
+        <span class="c1"># In this category are Tropical Storms</span>
+        <span class="k">if</span> <span class="n">speed</span> <span class="o">&gt;</span> <span class="mi">34</span> <span class="ow">and</span> <span class="n">speed</span> <span class="o">&lt;</span> <span class="mi">64</span><span class="p">:</span>
+            <span class="n">dotcolor</span><span class="o">=</span><span class="s1">&#39;aqua&#39;</span>
+            <span class="n">size</span><span class="o">=</span><span class="mf">6.5</span>
+            <span class="k">if</span> <span class="n">status</span><span class="o">!=</span><span class="s2">&quot;Hurricane&quot;</span><span class="p">:</span>
+                <span class="n">status</span><span class="o">=</span><span class="s2">&quot;Tropical Storm&quot;</span>
+        <span class="c1"># Here are Hurricanes.</span>
+        <span class="k">elif</span> <span class="n">speed</span> <span class="o">&gt;=</span><span class="mi">64</span><span class="p">:</span>
+            <span class="n">status</span><span class="o">=</span><span class="s1">&#39;Hurricane&#39;</span>
+            <span class="c1"># Distinguish light-strong-major Hurricanes.</span>
+            <span class="k">if</span> <span class="n">speed</span> <span class="o">&lt;</span><span class="mi">82</span><span class="p">:</span>
+                <span class="c1">#Light hurricanes.</span>
+                <span class="n">dotcolor</span><span class="o">=</span><span class="s1">&#39;yellow&#39;</span>
+                <span class="n">size</span><span class="o">=</span><span class="mi">9</span>
+            <span class="k">elif</span> <span class="n">speed</span> <span class="o">&gt;=</span> <span class="mi">82</span> <span class="ow">and</span> <span class="n">speed</span> <span class="o">&lt;</span><span class="mi">112</span><span class="p">:</span>
+                <span class="c1"># Strong hurricanes.</span>
+                <span class="n">dotcolor</span><span class="o">=</span><span class="s1">&#39;orange&#39;</span>
+                <span class="n">size</span><span class="o">=</span><span class="mi">12</span>
+            <span class="k">elif</span> <span class="n">speed</span> <span class="o">&gt;=</span> <span class="mi">112</span><span class="p">:</span>
+                <span class="c1"># Major Hurricanes.</span>
+                <span class="n">dotcolor</span><span class="o">=</span><span class="s1">&#39;red&#39;</span>
+                <span class="n">size</span><span class="o">=</span><span class="mi">18</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># If it was too weak, it was probably a depression.</span>
+            <span class="k">if</span> <span class="n">status</span><span class="o">!=</span><span class="s2">&quot;Hurricane&quot;</span> <span class="ow">and</span> <span class="n">status</span><span class="o">!=</span><span class="s2">&quot;Tropical Storm&quot;</span><span class="p">:</span>
+                <span class="n">status</span><span class="o">=</span><span class="s2">&quot;Tropical Depression&quot;</span>
+            <span class="n">dotcolor</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span>
+            <span class="n">size</span><span class="o">=</span><span class="mf">3.5</span>
+          <span class="c1"># A final color change might apply if the storm is categorized with the label &quot;EX&quot;</span>
+          <span class="c1"># as such, we set up a different color</span>
+        <span class="k">if</span> <span class="n">intensity</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">==</span><span class="s1">&#39; EX&#39;</span><span class="p">:</span>
+            <span class="n">dotcolor</span><span class="o">=</span><span class="s1">&#39;magenta&#39;</span>
+            <span class="n">size</span><span class="o">=</span><span class="mi">5</span>
+        <span class="c1"># Plot the marker with the specified color and size on the proper coordinates.</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">m</span><span class="p">(</span><span class="n">lon</span><span class="p">[</span><span class="n">index</span><span class="p">],</span><span class="n">lat</span><span class="p">[</span><span class="n">index</span><span class="p">])[</span><span class="mi">0</span><span class="p">],</span><span class="n">m</span><span class="p">(</span><span class="n">lon</span><span class="p">[</span><span class="n">index</span><span class="p">],</span><span class="n">lat</span><span class="p">[</span><span class="n">index</span><span class="p">])[</span><span class="mi">1</span><span class="p">],</span><span class="n">s</span><span class="o">=</span><span class="n">size</span><span class="o">*</span><span class="mf">7.5</span><span class="p">,</span><span class="n">c</span><span class="o">=</span><span class="n">dotcolor</span><span class="p">)</span>
+        <span class="c1"># Add dates to daylist if they are not already in there and plot them.</span>
+        <span class="k">if</span> <span class="n">dates</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">day</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">daylist</span><span class="p">:</span>
+            <span class="n">daylist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dates</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">day</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">m</span><span class="p">(</span><span class="n">lon</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">+.</span><span class="mi">75</span><span class="p">,</span><span class="n">lat</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">+</span><span class="mf">1.25</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span><span class="n">m</span><span class="p">(</span><span class="n">lon</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">+.</span><span class="mi">75</span><span class="p">,</span><span class="n">lat</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">+</span><span class="mf">1.25</span><span class="p">)[</span><span class="mi">1</span><span class="p">],</span><span class="n">dates</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">day</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;darkgreen&#39;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span><span class="n">backgroundcolor</span><span class="o">=</span><span class="s1">&#39;lime&#39;</span><span class="p">)</span>
+    <span class="c1"># We also overlay a white dotted line on the track.</span>
+    <span class="n">m</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">m</span><span class="p">(</span><span class="n">lon</span><span class="p">,</span><span class="n">lat</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span><span class="n">m</span><span class="p">(</span><span class="n">lon</span><span class="p">,</span><span class="n">lat</span><span class="p">)[</span><span class="mi">1</span><span class="p">],</span><span class="s1">&#39;--&#39;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;white&#39;</span><span class="p">)</span>
+    <span class="c1"># Add title.</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">status</span><span class="o">+</span><span class="s1">&#39; &#39;</span><span class="o">+</span><span class="n">storm</span><span class="o">+</span><span class="s1">&#39; &#39;</span><span class="o">+</span><span class="n">year</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+    <span class="c1"># Adding the legend object, use of handle package and Handle Objects. Each &quot;dummy handle&quot; is associated with their respective handle (which plots the marker color).</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">([</span><span class="n">MObject</span><span class="p">(),</span><span class="n">Hurricane3Object</span><span class="p">(),</span><span class="n">Hurricane1Object</span><span class="p">(),</span><span class="n">TSObject</span><span class="p">,</span><span class="n">TDObject</span><span class="p">,</span><span class="n">EXObject</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;Major Hurricane (M)&quot;</span><span class="p">,</span><span class="s2">&quot;Hurricane Cat. 3-4 (H)&quot;</span><span class="p">,</span><span class="s2">&quot;Hurricane Cat. 1-2 (H)&quot;</span><span class="p">,</span><span class="s2">&quot;Tropical Storm (TS)&quot;</span><span class="p">,</span><span class="s2">&quot;Tropical Depression (TD)&quot;</span><span class="p">,</span><span class="s2">&quot;Extratropical Cyclone (EX)&quot;</span><span class="p">]</span>
+        <span class="p">,</span><span class="n">handler_map</span><span class="o">=</span><span class="p">{</span><span class="n">MObject</span><span class="p">:</span> <span class="n">MajorHurricaneObjectHandler</span><span class="p">(),</span><span class="n">Hurricane3Object</span><span class="p">:</span> <span class="n">Hurricane3ObjectHandler</span><span class="p">(),</span><span class="n">Hurricane1Object</span><span class="p">:</span> <span class="n">Hurricane1ObjectHandler</span><span class="p">(),</span><span class="n">TSObject</span><span class="p">:</span> <span class="n">TSObjectHandler</span><span class="p">(),</span><span class="n">TDObject</span><span class="p">:</span> <span class="n">TDObjectHandler</span><span class="p">(),</span><span class="n">EXObject</span><span class="p">:</span> <span class="n">EXObjectHandler</span><span class="p">()},</span>
+        <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Legend&quot;</span><span class="p">,</span><span class="n">bbox_to_anchor</span><span class="o">=</span><span class="n">legend_location</span><span class="p">,</span><span class="n">ncol</span><span class="o">=</span><span class="n">columns</span><span class="p">)</span>
+    <span class="c1"># Show final product.</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="section" id="expected-plot-for-isabel-in-2003">
+<h2>1.1. Expected plot for Isabel in 2003:<a class="headerlink" href="#expected-plot-for-isabel-in-2003" title="Permalink to this headline">¶</a></h2>
+<img alt="../_images/isabel.png" class="sphx-glr-single-img" src="../_images/isabel.png" />
+<p>A way you might use this code as a stand-alone script is:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">plotrack</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="n">plotrack</span><span class="p">(</span><span class="s2">&quot;Isabel&quot;</span><span class="p">,</span><span class="s2">&quot;2003&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="plot_intensity_series.html" class="btn btn-neutral float-right" title="2. Plotting the intensity metrics of a Tropical Cyclone" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../gallery.html" class="btn btn-neutral" title="Gallery of Examples" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Garcia-Franco J.L..
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
