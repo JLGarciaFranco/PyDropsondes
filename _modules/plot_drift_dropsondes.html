@@ -1,0 +1,437 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>plot_drift_dropsondes &mdash; PyDropsondes 1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../_static/gallery.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../_static/theme_override.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="PyDropsondes 1 documentation" href="../index.html"/>
+        <link rel="up" title="Module code" href="index.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../home.html" class="icon icon-home"> PyDropsondes
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Table of Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../userguide.html">User guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../interface.html">The Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../flight.html">Flightdata</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../process.html">Process Dropsondes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools.html">The Toolbox</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gallery.html">Gallery of Examples</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../home.html">PyDropsondes</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../home.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Module code</a> &raquo;</li>
+        
+      <li>plot_drift_dropsondes</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for plot_drift_dropsondes</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Plot the drift of all dropsondes for a TC</span>
+<span class="sd">=====================================================</span>
+
+<span class="sd">This example gives the typical plot that locates the dropsonde in a storm relative framework.</span>
+<span class="sd">Typically, this plot is shown in a cartesian coordinate system :math:`(x,y)`, however, this example does it</span>
+<span class="sd">in cylindrical coordinates :math:`(r,\theta)`, since, actually, to plot the dropsonde location in cartesian coordinates one must first, estimate :math:`r` and :math:`theta`.</span>
+
+
+<span class="sd">Specifically, the `best track &lt;https://www.nhc.noaa.gov/data/#hurdat&gt;`_ dataset, provides the maximum sustained winds at 10 m altitude (hereafter :math:`U_{10}`)</span>
+<span class="sd">and the minimum surface pressure (hereafter :math:`P_{min}`).</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># matplotlib is the main module in python for plotting.</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="c1"># Numpy is our friend, it is the most important module.</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="c1"># Dates and time module</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="c1"># Pandas, unlike the bear, is used by python to read-in databases, in this case for the track database.</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="c1"># Import datetime module for handling date objects.</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="c1"># Import glob module to rapidly access all files in a folder.</span>
+<span class="kn">import</span> <span class="nn">glob</span>
+<span class="c1"># Import scipy module with the packaged of interpolate, in particular, get the function griddata (scipy can be heavy)</span>
+<span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="k">import</span> <span class="n">griddata</span>
+<span class="c1"># Import all functions from toolbox.</span>
+<span class="kn">from</span> <span class="nn">toolbox</span> <span class="k">import</span> <span class="o">*</span>
+<span class="c1"># Import module to get-in the operating system</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="c1"># Define function and arguments (refer to Sphinx)</span>
+<div class="viewcode-block" id="plotdrift"><a class="viewcode-back" href="../tools.html#plot_drift_dropsondes.plotdrift">[docs]</a><span class="k">def</span> <span class="nf">plotdrift</span><span class="p">(</span><span class="n">filelist</span><span class="p">,</span><span class="n">end</span><span class="p">,</span><span class="n">track</span><span class="p">,</span><span class="n">storm</span><span class="p">):</span>
+        <span class="c1"># Outpudirectory</span>
+        <span class="n">figdir</span><span class="o">=</span><span class="s1">&#39;/home/jlgf/Documents/MRes/Project/figs/&#39;</span><span class="o">+</span><span class="n">storm</span><span class="o">+</span><span class="s1">&#39;/&#39;</span>
+        <span class="c1"># Create outputdirectory if non existent.</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s1">&#39;mkdir ../figs/&#39;</span><span class="o">+</span><span class="n">storm</span><span class="p">)</span>
+        <span class="c1"># Get period sampling as a dictionary</span>
+        <span class="n">sampleperiods</span><span class="o">=</span><span class="n">getsamplingperiods</span><span class="p">(</span><span class="n">filelist</span><span class="p">,</span><span class="mf">3.</span><span class="p">)</span>
+
+        <span class="c1"># First iteration is over the sampling periods to produce one plot for each sampling period.</span>
+        <span class="k">for</span> <span class="n">sampindex</span><span class="p">,</span><span class="n">periodskey</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sampleperiods</span><span class="p">):</span>
+            <span class="c1"># The starting date (sdt) is the key of the dictionary, the value is then the end date (endt)</span>
+            <span class="n">sdt</span><span class="o">=</span><span class="n">periodskey</span>
+            <span class="n">endt</span><span class="o">=</span><span class="n">sampleperiods</span><span class="p">[</span><span class="n">periodskey</span><span class="p">]</span>
+            <span class="c1"># Print so user knows what time-span corresponds to this plot.</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">sdt</span><span class="p">,</span><span class="n">endt</span><span class="p">)</span>
+
+            <span class="c1"># Create empty lists.</span>
+            <span class="n">lats</span><span class="o">=</span><span class="p">[]</span>
+            <span class="n">lons</span><span class="o">=</span><span class="p">[]</span>
+            <span class="n">rmaxis</span><span class="o">=</span><span class="p">[]</span>
+            <span class="n">x</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
+            <span class="n">y</span><span class="o">=</span><span class="p">[]</span>
+            <span class="n">dates</span><span class="o">=</span><span class="p">[]</span>
+            <span class="n">maxr</span><span class="o">=</span><span class="mi">10</span>
+
+            <span class="c1">#Create figure object with size of 11 megapixels and 9 megapixels.</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">11</span><span class="p">,</span><span class="mi">9</span><span class="p">))</span>
+            <span class="c1"># Make figure polar</span>
+            <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s1">&#39;polar&#39;</span><span class="p">)</span>
+            <span class="c1"># Iterate over dropsondes files.</span>
+            <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">filelist</span><span class="p">:</span>
+                <span class="c1"># Establish type of file.</span>
+                <span class="k">if</span> <span class="s1">&#39;radazm&#39;</span> <span class="ow">in</span> <span class="n">filename</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="ow">or</span> <span class="s1">&#39;eol&#39;</span> <span class="ow">in</span> <span class="n">filename</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+                	<span class="n">end</span><span class="o">=</span><span class="s1">&#39;radazm&#39;</span>
+                <span class="k">else</span><span class="p">:</span>
+                	<span class="n">end</span><span class="o">=</span><span class="s1">&#39;avp&#39;</span>
+                <span class="c1"># Get information from files.</span>
+                <span class="n">dicc</span><span class="o">=</span><span class="n">findproperties</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="n">end</span><span class="p">)</span>
+                <span class="c1"># Evaluate if current file is in sampling period.</span>
+                <span class="k">if</span> <span class="n">dicc</span><span class="p">[</span><span class="s1">&#39;Launch Time&#39;</span><span class="p">]</span><span class="o">&gt;=</span><span class="n">endt</span> <span class="ow">or</span> <span class="n">dicc</span><span class="p">[</span><span class="s1">&#39;Launch Time&#39;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">sdt</span><span class="p">:</span>
+                <span class="c1"># Following print can be enabled to see which files correspond to each plot but this can also saturate printing screen.</span>
+                <span class="c1">#	print(&#39;out of period&#39;)</span>
+                	<span class="k">continue</span>
+
+                <span class="c1"># Read-in data.</span>
+                <span class="c1"># Notice the following control sequence could have been inserted in line 65-68 above but read-in of data can be computationally expensive so we only read all fields</span>
+                <span class="c1"># if current file is in sampling period. This control sequence observes the end of th file.</span>
+                <span class="k">if</span> <span class="n">end</span> <span class="o">==</span><span class="s1">&#39;avp&#39;</span><span class="p">:</span>
+
+                    <span class="c1"># The following description is the same for the end of file ==&#39;radazm&#39;</span>
+                    <span class="c1"># Specify header and footer lengths</span>
+                    <span class="n">head</span><span class="o">=</span><span class="mi">6</span>
+                    <span class="n">foot</span><span class="o">=</span><span class="mi">19</span>
+
+                    <span class="c1"># Allocate indexes in file for longitude and latitude.</span>
+                    <span class="n">longindex</span><span class="o">=</span><span class="mi">11</span>
+                    <span class="n">latindex</span><span class="o">=</span><span class="mi">12</span>
+
+                    <span class="n">nump</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">genfromtxt</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="n">skip_header</span><span class="o">=</span><span class="n">head</span><span class="p">,</span><span class="n">skip_footer</span><span class="o">=</span><span class="n">foot</span><span class="p">)</span>
+
+                    <span class="c1"># Obtain hours minutes and seconds of measurement.</span>
+                    <span class="n">yymmdd</span><span class="o">=</span><span class="n">nump</span><span class="p">[:,</span><span class="mi">3</span><span class="p">]</span>
+                    <span class="n">hhmmss</span><span class="o">=</span><span class="n">nump</span><span class="p">[:,</span><span class="mi">4</span><span class="p">]</span>
+                    <span class="n">hours</span><span class="p">,</span><span class="n">minutes</span><span class="p">,</span><span class="n">seconds</span><span class="o">=</span><span class="n">timeconversion</span><span class="p">(</span><span class="n">hhmmss</span><span class="p">)</span>
+
+                <span class="k">elif</span> <span class="n">end</span> <span class="o">==</span> <span class="s1">&#39;radazm&#39;</span><span class="p">:</span>
+                    <span class="c1"># as for &#39;avp&#39;</span>
+                    <span class="n">head</span><span class="o">=</span><span class="mi">16</span>
+                    <span class="n">foot</span><span class="o">=</span><span class="mi">19</span>
+                    <span class="n">longindex</span><span class="o">=</span><span class="mi">14</span>
+                    <span class="n">latindex</span><span class="o">=</span><span class="mi">15</span>
+                    <span class="n">nump</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">genfromtxt</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="n">skip_header</span><span class="o">=</span><span class="n">head</span><span class="p">,</span><span class="n">skip_footer</span><span class="o">=</span><span class="n">foot</span><span class="p">)</span>
+                    <span class="n">hours</span><span class="o">=</span><span class="n">nump</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="n">minutes</span><span class="o">=</span><span class="n">nump</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]</span>
+                    <span class="n">seconds</span><span class="o">=</span><span class="n">nump</span><span class="p">[:,</span><span class="mi">3</span><span class="p">]</span>
+
+                <span class="c1"># Read in file, it is a numpy nd-array, which is suitable for the variable name of nump.</span>
+
+                <span class="c1"># Allocate variables.</span>
+                <span class="n">lon</span><span class="o">=</span><span class="n">nump</span><span class="p">[:,</span><span class="n">longindex</span><span class="p">]</span>
+                <span class="n">lat</span><span class="o">=</span><span class="n">nump</span><span class="p">[:,</span><span class="n">latindex</span><span class="p">]</span>
+
+                <span class="c1"># Clean arrays from possible errors.</span>
+                <span class="n">lon</span><span class="o">=</span><span class="n">clean1</span><span class="p">(</span><span class="n">lon</span><span class="p">)</span>
+                <span class="n">lat</span><span class="o">=</span><span class="n">clean1</span><span class="p">(</span><span class="n">lat</span><span class="p">)</span>
+
+                <span class="c1"># Check for empty arrays, if empty, continue to next file.</span>
+                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">lon</span><span class="p">))</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">lat</span><span class="p">)):</span>
+                	<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;NaN error&#39;</span><span class="p">)</span>
+                	<span class="k">continue</span>
+
+                <span class="c1"># Estimate r and theta from the file.</span>
+                <span class="n">r</span><span class="p">,</span><span class="n">theta</span><span class="o">=</span><span class="n">xytorth</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">lon</span><span class="p">),</span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">lat</span><span class="p">),</span><span class="n">track</span><span class="p">,</span><span class="n">dicc</span><span class="p">[</span><span class="s1">&#39;Launch Time&#39;</span><span class="p">])</span>
+
+                <span class="c1"># If distance is greater than 200 km, this dropsonde is not of interest, then continue to next file.</span>
+                <span class="k">if</span> <span class="n">r</span><span class="o">&gt;</span><span class="mi">200</span><span class="p">:</span>
+                	<span class="k">continue</span>
+
+                <span class="c1"># Emtpy lists to allocate for plotting.</span>
+                <span class="n">xs</span><span class="o">=</span><span class="p">[]</span>
+                <span class="n">ys</span><span class="o">=</span><span class="p">[]</span>
+                <span class="n">rs</span><span class="o">=</span><span class="p">[]</span>
+                <span class="n">thetas</span><span class="o">=</span><span class="p">[]</span>
+                <span class="c1"># Iteration over longitude array.</span>
+                <span class="c1"># Break lon in a enumerated tuple where j is the main index.</span>
+                <span class="k">for</span> <span class="n">j</span><span class="p">,</span><span class="n">longi</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">lon</span><span class="p">):</span>
+                    <span class="c1"># Create datetime object using dictionary date and file hours/minutes/seconds</span>
+                    <span class="n">date</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="n">dicc</span><span class="p">[</span><span class="s1">&#39;Launch Time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">year</span><span class="p">,</span><span class="n">dicc</span><span class="p">[</span><span class="s1">&#39;Launch Time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">month</span><span class="p">,</span><span class="n">dicc</span><span class="p">[</span><span class="s1">&#39;Launch Time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">day</span><span class="p">,</span><span class="nb">int</span><span class="p">(</span><span class="n">hours</span><span class="p">[</span><span class="n">j</span><span class="p">]),</span><span class="nb">int</span><span class="p">(</span><span class="n">minutes</span><span class="p">[</span><span class="n">j</span><span class="p">]),</span><span class="nb">int</span><span class="p">(</span><span class="n">seconds</span><span class="p">[</span><span class="n">j</span><span class="p">]))</span>
+
+                    <span class="c1"># If latitude or longitude are NAN&#39;s then continue to next value.</span>
+                    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">longi</span><span class="p">)</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">lat</span><span class="p">[</span><span class="n">j</span><span class="p">]):</span>
+                    	<span class="k">continue</span>
+
+                    <span class="c1"># try and get r and theta from values, see sphinx toolbox.</span>
+                    <span class="k">try</span><span class="p">:</span>
+                    	<span class="n">r</span><span class="p">,</span><span class="n">theta</span><span class="o">=</span><span class="n">xytorth</span><span class="p">(</span><span class="n">longi</span><span class="p">,</span><span class="n">lat</span><span class="p">[</span><span class="n">j</span><span class="p">],</span><span class="n">track</span><span class="p">,</span><span class="n">date</span><span class="p">)</span>
+                    <span class="k">except</span><span class="p">:</span>
+                    	<span class="k">continue</span>
+
+                    <span class="c1"># Add values to lists.</span>
+                    <span class="n">rs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+                    <span class="n">thetas</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+                    <span class="n">xs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">))</span>
+                    <span class="n">ys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">))</span>
+
+                <span class="c1"># Condtion to find outer edge of plot and make plot customized to current tiem period.</span>
+                <span class="c1"># This if only selects the biggest radius (maxr) found across the time=period.</span>
+                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">rs</span><span class="p">)</span><span class="o">&gt;</span><span class="n">maxr</span><span class="p">:</span>
+                    <span class="n">maxr</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">rs</span><span class="p">)</span>
+
+                <span class="c1"># Plot all thetas and radius.</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">thetas</span><span class="p">,</span><span class="n">rs</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;end of filelist loop&#39;</span><span class="p">)</span>
+
+            <span class="c1"># Select ticks based on maximum radius.</span>
+            <span class="n">rticks</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">maxr</span><span class="o">+</span><span class="mi">10</span><span class="p">,</span><span class="mi">25</span><span class="p">)</span>
+
+            <span class="c1">## Sequence to obtain Radius of Maximum Wind (RMW) from flight-level data.</span>
+            <span class="n">rms</span><span class="o">=</span><span class="n">track</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="s1">&#39;Rmax&#39;</span><span class="p">]</span>
+            <span class="n">ris</span><span class="o">=</span><span class="mi">0</span>
+            <span class="n">counti</span><span class="o">=</span><span class="mi">0</span>
+            <span class="c1"># Loop to find all RMW close to this datetime.</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">key</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">rms</span><span class="p">):</span>
+            	<span class="k">if</span> <span class="n">key</span><span class="o">&gt;</span><span class="n">date</span><span class="o">-</span><span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span> <span class="ow">and</span> <span class="n">key</span><span class="o">&lt;</span><span class="n">dicc</span><span class="p">[</span><span class="s1">&#39;Launch Time&#39;</span><span class="p">]</span><span class="o">+</span><span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+            		<span class="n">ris</span><span class="o">+=</span><span class="n">rms</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            		<span class="n">counti</span><span class="o">+=</span><span class="mi">1</span>
+            <span class="c1"># Average to get a mean RMW of the period.</span>
+            <span class="k">if</span> <span class="n">counti</span><span class="o">!=</span><span class="mi">0</span><span class="p">:</span>
+            	<span class="n">rmax</span><span class="o">=</span><span class="n">ris</span><span class="o">/</span><span class="n">counti</span>
+
+            <span class="c1"># Make array of RMW of idntical shape as a plotting array (thetai) to be able to plot RMW.</span>
+            <span class="n">rmaxis</span><span class="o">=</span><span class="p">[]</span>
+            <span class="k">for</span> <span class="n">thetai</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">10</span><span class="p">):</span>
+                <span class="n">rmaxis</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rmax</span><span class="p">)</span>
+
+            <span class="c1"># Plot RMW.</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mf">10.</span><span class="p">),</span><span class="n">rmaxis</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">)</span>
+
+            <span class="c1"># Plot settings.</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Dropsonde drift for &#39;</span><span class="o">+</span><span class="n">storm</span><span class="o">+</span><span class="s1">&#39; on &#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">sdt</span><span class="p">),</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+            <span class="c1"># Set raidus ticks and position.</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_rticks</span><span class="p">(</span><span class="n">rticks</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_rlabel_position</span><span class="p">(</span><span class="mf">135.</span><span class="p">)</span>
+
+            <span class="c1"># Add customized-grid.</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span><span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">)</span>
+
+            <span class="c1"># Show Plot.</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Garcia-Franco J.L..
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

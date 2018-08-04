@@ -27,12 +27,12 @@ import glob
 # Import scipy module with the packaged of interpolate, in particular, get the function griddata (scipy can be heavy)
 from scipy.interpolate import griddata
 # Import all functions from toolbox.
-from toolbox import findproperties,getsamplingperiods,cart_to_cylindr,clean1,timeconversion,clean2
+from toolbox import findproperties,getsamplingperiods,cart_to_cylindr,clean1,timeconversion
 # Import module to get-in the operating system
 import os
 
 # Define function and arguments (refer to Sphinx)
-def plotdrift(filelist,track,storm,show):
+def plotdrift(filelist,track,storm):
         """
         Plot drift function
 
@@ -43,18 +43,14 @@ def plotdrift(filelist,track,storm,show):
         os.system('mkdir ../figs/'+storm)
         # Get period sampling as a dictionary
         print('Getting sample periods')
-        sampleperiods=getsamplingperiods(filelist,2.6)
+        sampleperiods=getsamplingperiods(filelist,3.)
 
-        print(sampleperiods)
+        print('Plotting drift in the period :')
         # First iteration is over the sampling periods to produce one plot for each sampling period.
-        # sampleperiods={datetime.datetime(2005, 9, 22, 6, 33, 41):datetime.datetime(2005,9,23,3,0,0),datetime.datetime(2005,9,23,6,0,0):datetime.datetime(2005, 9, 24, 7, 3, 27, 0)}
-#        sampleperiods={datetime.datetime(2005, 9, 19, 12, 0, 0):datetime.datetime(2005,9,20,5,0,0),datetime.datetime(2005, 9, 20, 10, 0, 41):datetime.datetime(2005,9,21,3,0,0),datetime.datetime(2005, 9, 22, 5, 33, 41):datetime.datetime(2005,9,23,3,0,0),datetime.datetime(2005,9,23,6,0,0):datetime.datetime(2005, 9, 24, 7, 3, 27, 0)}
+    #    sampleperiods=[datetime.datetime(2005,9,23,20,25,0)]
 
-        peddict=['A','B','C','D','E','F']
         for sampindex,periodskey in enumerate(sampleperiods):
             # The starting date (sdt) is the key of the dictionary, the value is then the end date (endt)
-            pedkey=peddict[sampindex]
-            print('Plotting drift in the period :')
             sdt=periodskey
             endt=sampleperiods[periodskey]
             # Print so user knows what time-span corresponds to this plot.
@@ -67,14 +63,14 @@ def plotdrift(filelist,track,storm,show):
             x=np.array([])
             y=[]
             dates=[]
-            dropsondes={}
             maxr=10
-            count=0
-            #Create figure object with size of 11 megapixels and 9 megapixels.
 
+            #Create figure object with size of 11 megapixels and 9 megapixels.
+            plt.figure(figsize=(11,9))
+            # Make figure polar
+            ax = plt.subplot(111, projection='polar')
             # Iterate over dropsondes files.
             for filename in filelist:
-# 		possible user print
                 print(filename)
                 # Establish type of file.
                 if 'radazm' in filename.split('/')[-1] or 'eol' in filename.split('/')[-1]:
@@ -128,8 +124,8 @@ def plotdrift(filelist,track,storm,show):
                 Height=nump[:,13]
 
                 # Clean arrays from possible errors.
-                lon=clean2(clean1(lon))
-                lat=clean2(clean1(lat))
+                lon=clean1(lon)
+                lat=clean1(lat)
                 Height=clean1(Height)
 
                 # Check for empty arrays, if empty, continue to next file.
@@ -141,7 +137,7 @@ def plotdrift(filelist,track,storm,show):
                 r,theta=cart_to_cylindr(np.nanmean(lon),np.nanmean(lat),track,dicc['Launch Time'])
 
                 # If distance is greater than 200 km, this dropsonde is not of interest, then continue to next file.
-                if r>150:
+                if r>200:
                 	continue
 
                 # Emtpy lists to allocate for plotting.
@@ -177,21 +173,15 @@ def plotdrift(filelist,track,storm,show):
                     continue
                 if np.nanmax(rs)>maxr:
                     maxr=np.nanmax(rs)
-                count+=1
-                dropsondes[date]=[thetas,rs]
-                # Plot all thetas and radius.
-#                ax.plot(thetas,rs,linewidth=3,label=str(date))
 
-            if count <= 10:
-                continue
+                # Plot all thetas and radius.
+                ax.plot(thetas,rs,linewidth=3,label=str(date))
+
             print('end of filelist loop')
 
             # Select ticks based on maximum radius.
             rticks=np.arange(0,maxr+10,25)
 
-            plt.figure(figsize=(9,9))
-            # Make figure polar
-            ax = plt.subplot(111, projection='polar')
             ## Sequence to obtain Radius of Maximum Wind (RMW) from flight-level data.
             rms=track[3]['Rmax']
             ris=0
@@ -199,7 +189,7 @@ def plotdrift(filelist,track,storm,show):
             # Loop to find all RMW close to this datetime.
             date=dicc['Launch Time']
             for i,key in enumerate(rms):
-            	if key>date-datetime.timedelta(hours=3) and key<dicc['Launch Time']+datetime.timedelta(hours=1):
+            	if key>date-datetime.timedelta(hours=6) and key<dicc['Launch Time']+datetime.timedelta(hours=1):
             		ris+=rms[key]
             		counti+=1
             # Average to get a mean RMW of the period.
@@ -209,19 +199,17 @@ def plotdrift(filelist,track,storm,show):
                 rmax=0
             # Make array of RMW of idntical shape as a plotting array (thetai) to be able to plot RMW.
             rmaxis=[]
-            for thetai in np.arange(0,3*np.pi,np.pi/20):
+            for thetai in np.arange(0,3*np.pi,np.pi/10):
                 rmaxis.append(rmax)
-            for key in dropsondes.keys():
-                thetas,rs=dropsondes[key]
-                ax.plot(thetas,rs,linewidth=3)
+
             # Plot RMW.
-            ax.plot(np.arange(0,3*np.pi,np.pi/20.),rmaxis,linewidth=3,color='k')
-            print('Dropsondes= '+str(count))
+            ax.plot(np.arange(0,3*np.pi,np.pi/10.),rmaxis,linewidth=3,color='k')
+
             # Plot settings.
-            ax.set_title('Dropsonde drift Hurricane '+storm+' IOP '+str(pedkey),fontsize=16)
+            ax.set_title('Dropsonde drift for '+storm+' on '+str(sdt),fontsize=16)
             # Set raidus ticks and position.
             ax.set_rticks(rticks)
-            ax.set_rlim([0,80])
+            ax.set_rlim([0,75])
             ax.set_rlabel_position(135.)
 
             # Add customized-grid.
@@ -229,7 +217,4 @@ def plotdrift(filelist,track,storm,show):
 
             #plt.legend()
             # Show Plot.
-            plt.savefig('figs/'+storm+'/drift_'+str(periodskey)+'.png')
-            if show:
-               plt.show()
-            plt.close()
+            plt.show()

@@ -213,6 +213,9 @@ def read_process_write(filelist,track,storm):
                     lon=nump[:,14]
                     lat=nump[:,15]
 
+                    filer=clean1(nump[:,17])
+                    filetheta=clean1(nump[:,18])
+
                 # Clean longitude and latitude from possible nan values.
                 lon=clean1(lon)
                 lat=clean1(lat)
@@ -297,7 +300,7 @@ def read_process_write(filelist,track,storm):
 
                     # Write all rounded fields to file. While the use of a dictionary and a for loop could synthetize the following line
                     # this approach would use more lines and take more memory (big dictionaries are expensive).
-                    f.write(str(np.around(r,5))+'\t'+str(np.around(theta,5))+'\t'+str(np.around(u_speed[j],3))+'\t'+str(np.around(v_speed[j],3))+'\t'+str(np.around(w_speed[j],4))+'\t'
+                    f.write(str(np.around(filer[j],5))+'\t'+str(np.around(radians(- filetheta[j]+90),5))+'\t'+str(np.around(u_speed[j],3))+'\t'+str(np.around(v_speed[j],3))+'\t'+str(np.around(w_speed[j],4))+'\t'
                     +str(np.around(height[j],2))+'\t'+str(np.around(pot_temp[j].magnitude,3))+'\t'+str(np.around(theta_e[j].magnitude,3))+
                     '\t'+str(np.around(pressure[j],3))+'\t'+str(np.around(coriolis_f,4))+'\n')
 

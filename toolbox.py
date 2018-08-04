@@ -1252,3 +1252,43 @@ def periodI(storm,year,start,end):
     #print('I= '+str(meanintens))
     #x=yy
     return meanintens,Ichange
+def heightavg(x,y,var):
+	newx=[]
+	newy=[]
+	newvar=[]
+	i=0
+
+	while i < len(x)-1:
+		x0=x[i]
+		minix=[x0]
+		miniy=[y[i]]
+		minivar=[var[i]]
+		while np.abs(x[i+1]-x0) <= 1 and np.abs(y[i+1]-y[i])<=1:
+			minix.append(x[i+1])
+			miniy.append(y[i+1])
+			minivar.append(var[i+1])
+			i+=1
+			x0=x[i]
+			if i==len(x)-1:
+				break
+		newx.append(np.nanmean(minix))
+		newy.append(np.nanmean(miniy))
+		newvar.append(np.nanmean(minivar))
+		i+=1
+		print(minivar,np.nanmean(minivar))
+	print(len(newx),len(y),len(newy),len(x))
+	return newx,newy,newvar
+def get_Rmax(track,startdate,endate):
+    ## Sequence to obtain Radius of Maximum Wind (RMW) from flight-level data.
+    rms=track[3]['Rmax']
+    ris=[]
+    counti=0
+    rms=dict(rms)
+    # Loop to find all RMW close to this datetime.
+    #for key in period.keys():
+    #    startdate=key
+    #    endate=period[key]
+    for i,key in enumerate(rms):
+    	if key>startdate and key<endate:
+    		ris.append(rms[key])
+    return np.nanmean(ris)

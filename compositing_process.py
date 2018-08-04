@@ -55,11 +55,11 @@ def get_Rmax(track,startdate,endate):
     return np.nanmean(ris)
 omega=7.2921*(10**-5)
 filename='comp_metadata/I_IOPs.txt'
-df=pd.read_csv(filename,header=None,names=['Storm','Start','End','I',"IC"])
+df=pd.read_csv(filename,header=None,names=['Storm','Start','End','I',"IC",'PeakFlag'])
 #print(df)
 for indice in df.index:
     series=df.loc[indice]
-
+#    print(datetime.datetime.strptime(series['End'],,'%Y-%m-%d %H:%M:%S'))
     storm=series['Storm']
 #    icstring=series['IC'][1:-2]
     Ic=int(series['IC'])
@@ -117,6 +117,8 @@ for indice in df.index:
     outfile2='compfiles'+ifolder+storm+period+'.txt'
     if len(glob.glob('compfiles'+folder+storm+period+'*'))>0 and len(glob.glob('compfiles'+ifolder+storm+period+'*'))>0:
         continue
+    print(ifolder,len(glob.glob('compfiles'+folder+storm+period+'*')))
+    print('keep going'+storm+period)
     directorynames=['/gps.qc.eol/GIV/','/ublox.qc.eol/GIV/','/gps.qc.eol/P-3.43/','/ublox.qc.eol/P-3.43/','/gps.qc.eol/P-3.42/','/ublox.qc.eol/noaa.P-3/','/ublox.qc.eol/P-3.42/','/gps.qc.eol/USAF/','/ublox.qc.eol/USAF/']
     filelist=[]
 

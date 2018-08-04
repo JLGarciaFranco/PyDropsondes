@@ -57,13 +57,14 @@ omega=7.2921*(10**-5)
 filelist=['In','We','SS']
 #filelist=['tstd','h1','h2','h3','h4_5']
 #filelist=['I_IOPs']
-plt.figure(figsize=(9,22))
+plt.figure(figsize=(9,14))
 props = dict(boxstyle='round', facecolor='wheat', alpha=0.5)
-labels=['TS/TD','H-1','H-2','H-3','H-4,5','H-5']
+labels=['TS/TD','Cat. 1','Cat. 2','Cat. 3','Cat. 4,5','Cat. 5']
+labels=['Intensifying','Weakening','Steady-state']
 for counter,name in enumerate(filelist):
     filename='comp_metadata/'+name+'.txt'
     df=pd.read_csv(filename,header=None,names=['Storm','Start','End','I',"IC","Drops","RMW"])
-    #name=labels[counter]
+    name=labels[counter]
     newlist=[]
     #print(df['Drops'].sum(),name)
     #continue
@@ -85,10 +86,10 @@ for counter,name in enumerate(filelist):
 #    icstring=series['IC'][1:-2]
     #Ic=int(series['IC'])
     #print(Ic)
-    #rmwdict={'0-20':len(df[df['RMW']<20]),'20-30':len(df[(df['RMW']>20)&(df['RMW']<30)]),'30-40':len(df[(df['RMW']>30)&(df['RMW']<40)]),'40-50':len(df[(df['RMW']>40)&(df['RMW']<50)]),'50-65':len(df[(df['RMW']>50)&(df['RMW']<65)]),'65-80':len(df[(df['RMW']>65)&(df['RMW']<80)]),'>80':len(df[(df['RMW']>80)&(df['RMW']<110)])}
-    intensdict={'TS/TD':len(df[df['I']<64]),'H-1':len(df[(df['I']>64)&(df['I']<83)]),'H-2':len(df[(df['I']>83)&(df['I']<96)]),'H-3':len(df[(df['I']>96)&(df['I']<113)]),'H-4,5':len(df[(df['I']>113)])}
+    rmwdict={'0-20':len(df[df['RMW']<20]),'20-30':len(df[(df['RMW']>20)&(df['RMW']<30)]),'30-40':len(df[(df['RMW']>30)&(df['RMW']<40)]),'40-50':len(df[(df['RMW']>40)&(df['RMW']<50)]),'50-65':len(df[(df['RMW']>50)&(df['RMW']<65)]),'65-80':len(df[(df['RMW']>65)&(df['RMW']<80)]),'>80':len(df[(df['RMW']>80)&(df['RMW']<110)])}
+    #intensdict={'TS/TD':len(df[df['I']<64]),'Cat. 1':len(df[(df['I']>64)&(df['I']<83)]),'Cat. 2':len(df[(df['I']>83)&(df['I']<96)]),'Cat. 3':len(df[(df['I']>96)&(df['I']<113)]),'Cat. 4,5':len(df[(df['I']>113)])}
     #icdict={'We':len(df[df['IC']<=-10]),'SS':len(df[(df['IC']>-10)&(df['IC']<10)]),'In':len(df[df['IC']>=10])}
-    rmwdict=intensdict
+    #rmwdict=intensdict
     #rmwdict=icdict
     names = list(rmwdict.keys())
     print(names)
@@ -100,27 +101,28 @@ for counter,name in enumerate(filelist):
         ax1=ax
     else:
         ax=plt.subplot(311+counter,sharex=ax1)
-    ax.text(-0.5,17,name,bbox=props,fontsize=18)
+    ax.text(-0.5,8.5,name,bbox=props,fontweight='bold',fontsize=16)
     #plt.xlim([45,130])
     #plt.xticks([50,70,90,105,125],['TS/TD','H-1','H-2','H-3','H-4,5'])
     #plt.yticks(np.arange(0,30,5,dtype=int))
     #plt.xticks([10,25,35,50,67.5,92.5],['0-20','20-30','30-40','40-55','55-75','>75'])
     #plt.xlim([0,100])
-    ax.set_yticks(np.arange(0,21,3))
+    ax.set_yticks(np.arange(0,21,2))
     ax.bar(names,values,color='red')
-    ax.set_ylim([0,20])
+    ax.set_ylim([0,10])
     ax.grid(alpha=0.5)
-    ax.set_ylabel('Frequency',fontsize=19)
+    if counter==1:
+        ax.set_ylabel('Number of IOPs',family='italics',fontsize=19)
 
     for tick in ax.yaxis.get_major_ticks():
-        tick.label.set_fontsize(17)
+        tick.label.set_fontsize(14)
     if counter<2:
         plt.setp(ax.get_xticklabels(), visible=False)
     else:
         for tick in ax.xaxis.get_major_ticks():
-            tick.label.set_fontsize(17)
+            tick.label.set_fontsize(14)
     if counter==2:
-        ax.set_xlabel(r'$\bar{I}$ Category',fontsize=19)
+        ax.set_xlabel(r'RMW [km]',fontsize=19)
 #plt.suptitle('I Composites Size Histogram',fontsize=21)
     #I=np.nanmean(int(series['I']))
 #plt.tight_layout()

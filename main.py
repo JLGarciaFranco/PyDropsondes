@@ -95,7 +95,7 @@ storm=input("\t \t \t \t What storm are you looking for? __ ")
 print(" ")
 print("\t \t \t \t Great, you have selected Tropical Cyclone "+storm+" from the year of "+year)
 time.sleep(2)
-directorynames=['/gps.qc.eol/GIV/','/ublox.qc.eol/GIV/','/gps.qc.eol/P-3.43/','/ublox.qc.eol/P-3.43/','/gps.qc.eol/P-3.42/','/ublox.qc.eol/noaa.P-3/','/ublox.qc.eol/P-3.42/','/gps.qc.eol/USAF/','/ublox.qc.eol/USAF/']
+directorynames=['/gps.qc.eol/GIV/','/ublox.qc.eol/GIV/','/gps.qc.eol/P-3.43/','/ublox.qc.eol/P-3.43/','/gps.qc.eol/P-3.42/','/ublox.qc.eol/noaa.P-3/','/ublox.qc.eol/P-3.42/','/gps.qc.eol/USAF1/','/ublox.qc.eol/USAF1/']
 #directorynames=['/gps.qc.eol/P-3.42/']
 if int(year)>2012:
     downloadtype='avp'
@@ -105,7 +105,7 @@ if downloadtype == 'radazm':
 	filelist=[]
 	for direct in directorynames:
 		filelist=filelist+glob.glob(home+'/Data/'+year+'/'+storm+direct+'*')
-	filelist=glob.glob(home+'/Data/'+year+'/Hawk/*')+filelist
+#	filelist=glob.glob(home+'/Data/'+year+'/Hawk/*')+filelist
 elif downloadtype =='avp':
     filelist=glob.glob(home+'/Data/'+year+'/'+storm+'/*')
         #Define directory for output-figures (to be used by other scripts)
