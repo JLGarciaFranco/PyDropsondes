@@ -366,6 +366,10 @@ The following sections detail how the position and speed vectors are transformed
 <dd><ul class="simple">
 <li>Cartesian to Cylindrical *</li>
 </ul>
+<p>The first step to convert dropsonde observations into cylindrical coordinates is to locate the observations in the polar plane.
+This is usually computed through the jacobian matrix of transformation (J) between the two systems.
+However, this would require <span class="math">\((x,y)\)</span> components a priori.
+In the case of the dropsonde data, components are given in latitude and longitude of a sphere, this particularity requires a different practical procedure.</p>
 <p>Convert coordinates from a dropsonde observation in cartesian coordinates <span class="math">\((x,y)\)</span> to a cylindrical system <span class="math">\((r,\theta)\)</span>.</p>
 <p>This function is part of the main part of most scripts since Tropical Cyclones are usually depicted in cylindrical systems, not in cartesian.
 As such, extreme care was taken into this function and reader is advised to look carefully at all steps of this function.</p>
@@ -567,17 +571,21 @@ radial gradient of the pressure field, <span class="math">\(V_g\)</span> is the 
 <dt id="toolbox.equivalent_potential_temperature">
 <code class="descclassname">toolbox.</code><code class="descname">equivalent_potential_temperature</code><span class="sig-paren">(</span><em>pressure</em>, <em>temperature</em>, <em>dewpoint</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/toolbox.html#equivalent_potential_temperature"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#toolbox.equivalent_potential_temperature" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate equivalent potential temperature.</p>
-<p>This calculation must be given an air parcel’s pressure, temperature, and dewpoint.
+<blockquote>
+<div><p>This calculation must be given an air parcel’s pressure, temperature, and dewpoint.
 The implementation uses the formula outlined in <a class="reference internal" href="#bolton1980" id="id6">[Bol80]</a>:</p>
 <p>First, the LCL temperature is calculated:</p>
 <div class="math">
 \[T_{L}=\frac{1}{\frac{1}{T_{D}-56}+\frac{ln(T_{K}/T_{D})}{800}}+56\]</div>
-<p>Which is then used to calculate the potential temperature at the LCL:</p>
+<p>Which is then used to calculate the potential temperature at the LCL, where <span class="math">\(T_d\)</span> is the dew point temperature, <span class="math">\(T\)</span> is the observed temperature, where temperature is measured in Kelvin, i.e.,  <span class="math">\([T_d]=[T]=[K]\)</span>:</p>
 <div class="math">
 \[\theta_{DL}=T_{K}\left(\frac{1000}{p-e}\right)^k
 \left(\frac{T_{K}}{T_{L}}\right)^{.28r}\]</div>
-<p>Both of these are used to calculate the final equivalent potential temperature:</p>
-<div class="math">
+</div></blockquote>
+<p>where <span class="math">\(e\)</span> is the saturation water vapour pressure, <span class="math">\(p\)</span> is the observed pressure, <span class="math">\(r\)</span> is the mixing ratio and <span class="math">\(\kappa\)</span> as defined for ref{eq:theta}.
+equations are combined <a class="reference internal" href="#bolton1980" id="id7">[Bol80]</a> to formulate an expression for the final equivalent potential temperature <span class="math">\(\theta_e\)</span>.</p>
+<blockquote>
+<div><div class="math">
 \[\theta_{E}=\theta_{DL}\exp\left[\left(\frac{3036.}{T_{L}}
 -1.78\right)*r(1+.448r)\right]\]</div>
 <p><strong>Parameters</strong></p>
@@ -594,9 +602,9 @@ The implementation uses the formula outlined in <a class="reference internal" hr
 <dt><cite>pint.Quantity</cite></dt>
 <dd>The equivalent potential temperature of the parcel</dd>
 </dl>
-<p class="rubric">Notes</p>
-<p><a class="reference internal" href="#bolton1980" id="id7">[Bol80]</a> formula for Theta-e is used, since it is the most accurate non-iterative formulation
+<p><a class="reference internal" href="#bolton1980" id="id8">[Bol80]</a> formula for Theta-e is used, since it is the most accurate non-iterative formulation
 available.</p>
+</div></blockquote>
 </dd></dl>
 
 <dl class="function">
@@ -783,11 +791,11 @@ This script is originally from Metpy module but it was not avaialble in Python 3
 of a given upper air profile and parcel path. CIN is integrated between the surface and
 LFC, CAPE is integrated between the LFC and EL (or top of sounding). Intersection points of
 the measured temperature profile and parcel profile are linearly interpolated.</p>
-<p>Especifically this script has been adapted from <a class="reference internal" href="#montearl" id="id8">[M+14]</a> and <a class="reference internal" href="#molinari2010" id="id9">[MV10]</a> which use a very particular function for CAPE.
+<p>Especifically this script has been adapted from <a class="reference internal" href="#montearl" id="id9">[M+14]</a> and <a class="reference internal" href="#molinari2010" id="id10">[MV10]</a> which use a very particular function for CAPE.
 CAPE is not trivially computed from dropsonde measurements and several cautions are extended:</p>
 <ol class="arabic simple">
 <li>Vertical profiles usually do not reach the equilibrium level (EL) but instead are cut-off at 8-9 km.</li>
-<li>Typical CAPE formula estimates the area of the difference between parcel and environmental profiles, however, this method uses a more robust approach <a class="reference internal" href="#bogner2000" id="id10">[BBF00]</a>.</li>
+<li>Typical CAPE formula estimates the area of the difference between parcel and environmental profiles, however, this method uses a more robust approach <a class="reference internal" href="#bogner2000" id="id11">[BBF00]</a>.</li>
 <li>Several corrections would need to be in place for this script to be comparable to other studies (see above). It is then a simple approximation and by no means a complete and thorough algorithm.</li>
 </ol>
 <table class="docutils field-list" frame="void" rules="none">
@@ -813,7 +821,7 @@ point pressure.</li>
 </tbody>
 </table>
 <p class="rubric">Notes</p>
-<p>Formula adopted from <a class="reference internal" href="#montearl" id="id11">[M+14]</a></p>
+<p>Formula adopted from <a class="reference internal" href="#montearl" id="id12">[M+14]</a></p>
 <div class="math">
 \[\text{CAPE} = \int_{LFC}^{EL} g\frac{(T_{v} - T_{ve})}{\overline{T_{ve}}} dz\]</div>
 <div class="math">
@@ -913,13 +921,13 @@ Intensity_label: <cite>list</cite></p>
 <table class="docutils citation" frame="void" id="bogner2000" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id10">[BBF00]</a></td><td>Paul&nbsp;B Bogner, Gary&nbsp;M Barnes, and James&nbsp;L Franklin. Conditional instability and shear for six hurricanes over the atlantic ocean. <em>Weather and forecasting</em>, 15(2):192–207, 2000.</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id11">[BBF00]</a></td><td>Paul&nbsp;B Bogner, Gary&nbsp;M Barnes, and James&nbsp;L Franklin. Conditional instability and shear for six hurricanes over the atlantic ocean. <em>Weather and forecasting</em>, 15(2):192–207, 2000.</td></tr>
 </tbody>
 </table>
 <table class="docutils citation" frame="void" id="bolton1980" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label">[Bol80]</td><td><em>(<a class="fn-backref" href="#id6">1</a>, <a class="fn-backref" href="#id7">2</a>)</em> David Bolton. The computation of equivalent potential temperature. <em>Monthly Weather Review</em>, 108(7):1046–1053, 1980. URL: <a class="reference external" href="https://doi.org/10.1175/1520-0493(1980)108&lt;1046:TCOEPT&gt;2.0.CO;2">https://doi.org/10.1175/1520-0493(1980)108&lt;1046:TCOEPT&gt;2.0.CO;2</a>, <a class="reference external" href="https://arxiv.org/abs/https://doi.org/10.1175/1520-0493(1980)108&lt;1046:TCOEPT&gt;2.0.CO;2">arXiv:https://doi.org/10.1175/1520-0493(1980)108&lt;1046:TCOEPT&gt;2.0.CO;2</a>, <a class="reference external" href="https://doi.org/10.1175/1520-0493(1980)108&lt;1046:TCOEPT&gt;2.0.CO;2">doi:10.1175/1520-0493(1980)108&lt;1046:TCOEPT&gt;2.0.CO;2</a>.</td></tr>
+<tr><td class="label">[Bol80]</td><td><em>(<a class="fn-backref" href="#id6">1</a>, <a class="fn-backref" href="#id7">2</a>, <a class="fn-backref" href="#id8">3</a>)</em> David Bolton. The computation of equivalent potential temperature. <em>Monthly Weather Review</em>, 108(7):1046–1053, 1980. URL: <a class="reference external" href="https://doi.org/10.1175/1520-0493(1980)108&lt;1046:TCOEPT&gt;2.0.CO;2">https://doi.org/10.1175/1520-0493(1980)108&lt;1046:TCOEPT&gt;2.0.CO;2</a>, <a class="reference external" href="https://arxiv.org/abs/https://doi.org/10.1175/1520-0493(1980)108&lt;1046:TCOEPT&gt;2.0.CO;2">arXiv:https://doi.org/10.1175/1520-0493(1980)108&lt;1046:TCOEPT&gt;2.0.CO;2</a>, <a class="reference external" href="https://doi.org/10.1175/1520-0493(1980)108&lt;1046:TCOEPT&gt;2.0.CO;2">doi:10.1175/1520-0493(1980)108&lt;1046:TCOEPT&gt;2.0.CO;2</a>.</td></tr>
 </tbody>
 </table>
 <table class="docutils citation" frame="void" id="emanuel1986" rules="none">
@@ -931,7 +939,7 @@ Intensity_label: <cite>list</cite></p>
 <table class="docutils citation" frame="void" id="molinari2010" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id9">[MV10]</a></td><td>John Molinari and David Vollaro. Distribution of helicity, cape, and shear in tropical cyclones. <em>Journal of the Atmospheric Sciences</em>, 67(1):274–284, 2010.</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id10">[MV10]</a></td><td>John Molinari and David Vollaro. Distribution of helicity, cape, and shear in tropical cyclones. <em>Journal of the Atmospheric Sciences</em>, 67(1):274–284, 2010.</td></tr>
 </tbody>
 </table>
 <table class="docutils citation" frame="void" id="montgomery2009" rules="none">
@@ -943,7 +951,7 @@ Intensity_label: <cite>list</cite></p>
 <table class="docutils citation" frame="void" id="montearl" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label">[M+14]</td><td><em>(<a class="fn-backref" href="#id8">1</a>, <a class="fn-backref" href="#id11">2</a>)</em> Michael&nbsp;T Montgomery and others. An analysis of the observed low-level structure of rapidly intensifying and mature hurricane earl (2010). <em>Quarterly Journal of the Royal Meteorological Society</em>, 2014. doi:10.1002/qj.2283.</td></tr>
+<tr><td class="label">[M+14]</td><td><em>(<a class="fn-backref" href="#id9">1</a>, <a class="fn-backref" href="#id12">2</a>)</em> Michael&nbsp;T Montgomery and others. An analysis of the observed low-level structure of rapidly intensifying and mature hurricane earl (2010). <em>Quarterly Journal of the Royal Meteorological Society</em>, 2014. doi:10.1002/qj.2283.</td></tr>
 </tbody>
 </table>
 <table class="docutils citation" frame="void" id="schwendike" rules="none">
