@@ -341,8 +341,8 @@ between a sequence of measurements and the next, the two sequences will account 
 </ol>
 </dd>
 </dl>
-<p><strong>Returns</strong></p>
-<p>diccionario:<cite>dictionary</cite></p>
+<p><strong>Returns</strong>
+diccionario:<cite>dictionary</cite></p>
 <p>Notice the variable-name in spanish. Given the similarity of the word with the english version and the fact that
 <a class="reference external" href="https://docs.python.org/2/tutorial/datastructures.html">dictionary</a> is a reserved word in python.</p>
 <p><em>See also</em></p>
@@ -354,7 +354,12 @@ between a sequence of measurements and the next, the two sequences will account 
 <h2>Cartesian to Cylindrical system change<a class="headerlink" href="#cartesian-to-cylindrical-system-change" title="Permalink to this headline">¶</a></h2>
 <p>Tropical Cyclones are better represented in a cylindrical system, where the distance to the center and the azimuth angle
 describe the system.
-The following set of functions are related to his tricky process and could be considered a keystone of this Computer Project.</p>
+One of the most important parameters to process observations in TCs is an accurate track, as such, the following set of functions are the most important processing section of this project.</p>
+<p>The track used in this project is obtained from the flight-level data computation of the Willoughby-Chelmow track.
+Flight-level and dropsonde observations are located in three-dimensional space through the use of a cartesian coordinate system with longitude, latitude and altitude.
+However, TCs are best represented by cylindrical coordinates rather than cartesian coordinates.
+A cylindrical coordinate system has three components <span class="math">\([r,\Theta,z]\)</span> where <span class="math">\(r\)</span> is the radius to the axis-centre, $Theta$ is the azimuth or angle from the centre axis to the point and $z$ is the vertical axis as in the cartesian coordinate system.
+The following sections detail how the position and speed vectors are transformed from the cartesian to the coordinate system.</p>
 <dl class="function">
 <dt id="toolbox.cart_to_cylindr">
 <code class="descclassname">toolbox.</code><code class="descname">cart_to_cylindr</code><span class="sig-paren">(</span><em>lon</em>, <em>lat</em>, <em>track</em>, <em>dates</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/toolbox.html#cart_to_cylindr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#toolbox.cart_to_cylindr" title="Permalink to this definition">¶</a></dt>
@@ -365,21 +370,17 @@ The following set of functions are related to his tricky process and could be co
 <p>This function is part of the main part of most scripts since Tropical Cyclones are usually depicted in cylindrical systems, not in cartesian.
 As such, extreme care was taken into this function and reader is advised to look carefully at all steps of this function.</p>
 <p><em>Parameters</em></p>
-<dl class="docutils">
-<dt>lon <span class="classifier-delimiter">:</span> <span class="classifier"><cite>float</cite></span></dt>
-<dd>Longitude of observation point in degrees.</dd>
-<dt>lat <span class="classifier-delimiter">:</span> <span class="classifier"><cite>float</cite></span></dt>
-<dd>Latitude of observation point in degrees.</dd>
-<dt>track: <cite>dictionary</cite></dt>
-<dd>Track dictionary from <a class="reference internal" href="flight.html#flightdata.trackandspeed" title="flightdata.trackandspeed"><code class="xref py py-meth docutils literal"><span class="pre">flightdata.trackandspeed()</span></code></a>.</dd>
-<dt>dates: <cite>datetime</cite></dt>
-<dd>Date and time of observation.</dd>
-</dl>
+<p>lon : <cite>float</cite>
+Longitude of observation point in degrees.
+lat : <cite>float</cite>
+Latitude of observation point in degrees.
+track: <cite>dictionary</cite>
+Track dictionary from <a class="reference internal" href="flight.html#flightdata.trackandspeed" title="flightdata.trackandspeed"><code class="xref py py-meth docutils literal"><span class="pre">flightdata.trackandspeed()</span></code></a>.
+dates: <cite>datetime</cite>
+Date and time of observation.</p>
 <p><em>Returns</em></p>
-<dl class="docutils">
-<dt><cite>tuple</cite> <span class="classifier-delimiter">:</span> <span class="classifier">(r,theta)</span></dt>
-<dd>Return of two floats as a tuple, the final radius (r) and azimuth (theta).</dd>
-</dl>
+<p><cite>tuple</cite> : (r,theta)
+Return of two floats as a tuple, the final radius (r) and azimuth (theta).</p>
 <p>While this script could be self-contained it mostly depends on two other functions <a class="reference internal" href="#toolbox.distance" title="toolbox.distance"><code class="xref py py-meth docutils literal"><span class="pre">distance()</span></code></a> and
 <a class="reference internal" href="#toolbox.getcenter" title="toolbox.getcenter"><code class="xref py py-meth docutils literal"><span class="pre">getcenter()</span></code></a>. The latter retrieves the closest storm centre and the former computes distances between two lat-lon points.</p>
 <p>While <a class="reference internal" href="#toolbox.distance" title="toolbox.distance"><code class="xref py py-meth docutils literal"><span class="pre">distance()</span></code></a> documents how a distance between two points on a sphere is computed <span class="math">\((r)`\)</span>, the other part of a cylindrical
@@ -399,6 +400,30 @@ nautical term of <em>bearing</em> is used.</p>
 </ul>
 <p>Notice how the formula has a correcting factor which accounts for the fact that a bearing usually is measured as the angle between the north (remember this was initially computed for sailing) and the location of the destination.
 For this reason, we add <span class="math">\(=\frac{\pi}{2}\)</span> to establish a proper cylindrical system where the 0degree is aligned with the <span class="math">\(x&gt;0\)</span> and <span class="math">\(y=0\)</span> line.</p>
+<p>Finally, this function is used to perform the coordinate transformation to change from cartesian to cylindrical winds.</p>
+<p>The former, <span class="math">\(u_r=\frac{dr}{dt}`\)</span>, is a measure of the flow’s motion with respect to the centre of the axis and it can be interpreted as inflow (outflow) when it is negative (positive).
+Negative radial velocity is interpreted as motion directed towards the centre or axis.
+The latter, <span class="math">\(u_\theta\)</span> is the measure of wind flow perpendicular to the position vector <span class="math">\(\vec{e}={r,\theta}\)</span>.
+In TCs, <span class="math">\(u_\theta\)</span> is <span class="math">\(\sim 0\)</span> in the centre of storm and gradually increases until the radius of maximum wind (RMW), typically 20-50 km, and it gradually decreases outside of the RMW.</p>
+<p>The computation of <span class="math">\(u_r\)</span> and <span class="math">\(u_\theta\)</span> is made through the equations that relate the space <span class="math">\((x,y)\)</span> with <span class="math">\((r,\Theta)\)</span>, textit{i.e.}:</p>
+<div class="math">
+\[x=r\hspace{1mm}cos(\Theta)\]</div>
+<p>and</p>
+<div class="math">
+\[y=r\hspace{1mm}sin(\Theta) .\]</div>
+<p>Taking the time-derivative of  and  a simple system of linear equations is set-up, given by:</p>
+<div class="math">
+\[\frac{dx}{dt}=u=-r\hspace{1mm}sin(\Theta) \frac{d\Theta}{dt} + cos(\Theta)\frac{dr}{dt} \hspace{1mm},\]</div>
+<p>and
+.. math:: frac{dy}{dt}=v=rhspace{1mm}cos(Theta)frac{dTheta}{dt} + sin(Theta)frac{dr}{dt},</p>
+<p>where <span class="math">\(u\)</span> and <span class="math">\(v\)</span> are known (measured) and <span class="math">\(\Theta\)</span> and <span class="math">\(r\)</span> were derived in the previous section.
+Thus, equations and  can be solved for <span class="math">\(\frac{d\Theta}{dt}\)</span> and <span class="math">\(\frac{dr}{dt}\)</span>.
+This gives the explicit functions <span class="math">\(u_r(u,v,\Theta)=u_r\)</span> and <span class="math">\(u_\theta(u,v,\Theta)=u_\theta\)</span>:</p>
+<div class="math">
+\[u_r=u\hspace{1mm}cos(\Theta) + v\hspace{1mm}sin(\Theta)\]</div>
+<p>and</p>
+<div class="math">
+\[u_\theta=-u\hspace{1mm}sin(\Theta) + v\hspace{1mm}cos(\Theta)\]</div>
 <p><em>Examples</em></p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">toolbox</span> <span class="k">import</span> <span class="n">getcenter</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">centrelat</span><span class="p">,</span><span class="n">centrelon</span><span class="o">=</span><span class="n">getcenter</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2003</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">14</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span><span class="n">trackdict</span><span class="p">)</span>

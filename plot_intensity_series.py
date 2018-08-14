@@ -52,7 +52,7 @@ def intensityplot(storm,year):
     windspeeds=windspeeds*0.514444444
 
     # Create the figure, with a certain size
-    fig, ax1 = plt.subplots(figsize=(12,7))
+    fig, ax1 = plt.subplots(figsize=(12,8))
     # Plot wind speed.
     ax1.plot(df.index,windspeeds,'k',label=r'$U_{10}$',linewidth=3)
     # Wind label.
@@ -68,16 +68,16 @@ def intensityplot(storm,year):
 
     ax1.axvspan(datetime.datetime(2005,9,22,12,0,0),datetime.datetime(2005,9,22,12,25,0),alpha=0.6,color='magenta')
     ax1.axvspan(datetime.datetime(2005,9,23,12,0,0),datetime.datetime(2005,9,23,12,25,0),alpha=0.6,color='magenta')
-    ax1.axvspan(datetime.datetime(2005,9,21,10,0,0),datetime.datetime(2005,9,21,10,25,0),alpha=0.6,color='darkorange')
-    ax1.axvspan(datetime.datetime(2005,9,22,10,0),datetime.datetime(2005,9,22,10,25,0),alpha=0.6,color='darkorange')
+    ax1.axvspan(datetime.datetime(2005,9,21,10,0,0),datetime.datetime(2005,9,21,10,25,0),alpha=0.9,color='darkslategray')
+    ax1.axvspan(datetime.datetime(2005,9,22,10,0),datetime.datetime(2005,9,22,10,25,0),alpha=0.9,color='darkslategray')
     ax1.plot([datetime.datetime(2005,9,22,12,0,0),datetime.datetime(2005,9,23,12,25,0)],[3,3],'m--',linewidth=3)
-    ax1.plot([datetime.datetime(2005,9,21,10,0,0),datetime.datetime(2005,9,22,10,0,0)],[3,3],color='darkorange',linestyle='--',linewidth=3)
+    ax1.plot([datetime.datetime(2005,9,21,10,0,0),datetime.datetime(2005,9,22,10,0,0)],[3,3],color='darkslategray',linestyle='--',linewidth=3)
     ax1.text(datetime.datetime(2005,9,20,19,30,0),35,"A",fontsize=17,weight='bold',color='white')
     ax1.text(datetime.datetime(2005,9,21,19,0,0),35,"B",fontsize=17,weight='bold',color='white')
     ax1.text(datetime.datetime(2005,9,22,20,0,0),35,"C",fontsize=17,weight='bold',color='white')
     ax1.text(datetime.datetime(2005,9,23,21,0,0),35,"D",fontsize=17,weight='bold',color='white')
     ax1.text(datetime.datetime(2005,9,22,22,0,0),0,"ERC",fontsize=13,weight='bold',color='magenta')
-    ax1.text(datetime.datetime(2005,9,21,20,0,0),0,"SEW",fontsize=13,weight='bold',color='darkorange')
+    ax1.text(datetime.datetime(2005,9,21,20,0,0),0,"SEW",fontsize=13,weight='bold',color='darkslategray')
 
 
     # Put the legend.
@@ -98,6 +98,7 @@ def intensityplot(storm,year):
     # Create title
     plt.title(status+' '+storm+' '+year+' intensity history',fontsize=18)
     #Save plot
+    plt.tight_layout()
     plt.savefig('figs/Rita/intensity.png')
     # Show plot
     plt.show()
