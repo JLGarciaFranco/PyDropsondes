@@ -572,15 +572,21 @@ radial gradient of the pressure field, <span class="math">\(V_g\)</span> is the 
 <code class="descclassname">toolbox.</code><code class="descname">equivalent_potential_temperature</code><span class="sig-paren">(</span><em>pressure</em>, <em>temperature</em>, <em>dewpoint</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/toolbox.html#equivalent_potential_temperature"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#toolbox.equivalent_potential_temperature" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate equivalent potential temperature.</p>
 <blockquote>
+<div><blockquote>
 <div><p>This calculation must be given an air parcel’s pressure, temperature, and dewpoint.
 The implementation uses the formula outlined in <a class="reference internal" href="#bolton1980" id="id6">[Bol80]</a>:</p>
 <p>First, the LCL temperature is calculated:</p>
 <div class="math">
 \[T_{L}=\frac{1}{\frac{1}{T_{D}-56}+\frac{ln(T_{K}/T_{D})}{800}}+56\]</div>
-<p>Which is then used to calculate the potential temperature at the LCL, where <span class="math">\(T_d\)</span> is the dew point temperature, <span class="math">\(T\)</span> is the observed temperature, where temperature is measured in Kelvin, i.e.,  <span class="math">\([T_d]=[T]=[K]\)</span>:</p>
-<div class="math">
+</div></blockquote>
+<dl class="docutils">
+<dt>where <span class="math">\(T_d\)</span> is the dew point temperature, <span class="math">\(T\)</span> is the observed temperature, where temperature is measured in Kelvin, i.e.,  <span class="math">\([T_d]=[T]=[K]\)</span>:</dt>
+<dd><p class="first">Which is then used to calculate the potential temperature at the LCL,</p>
+<div class="last math">
 \[\theta_{DL}=T_{K}\left(\frac{1000}{p-e}\right)^k
 \left(\frac{T_{K}}{T_{L}}\right)^{.28r}\]</div>
+</dd>
+</dl>
 </div></blockquote>
 <p>where <span class="math">\(e\)</span> is the saturation water vapour pressure, <span class="math">\(p\)</span> is the observed pressure, <span class="math">\(r\)</span> is the mixing ratio and <span class="math">\(\kappa\)</span> as defined for ref{eq:theta}.
 equations are combined <a class="reference internal" href="#bolton1980" id="id7">[Bol80]</a> to formulate an expression for the final equivalent potential temperature <span class="math">\(\theta_e\)</span>.</p>
